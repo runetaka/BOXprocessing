@@ -16,6 +16,26 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
+        
+        if #available(iOS 15, *) {
+                // NavigationBarのTranslucentチェックを外している場合、設定が必要。
+                let navAppearance = UINavigationBarAppearance()
+                navAppearance.configureWithOpaqueBackground()
+                UINavigationBar.appearance().standardAppearance = navAppearance
+                UINavigationBar.appearance().scrollEdgeAppearance = navAppearance
+                    }
+        
+
+        
+        let window = UIWindow(windowScene: scene as! UIWindowScene)
+        self.window = window
+        window.makeKeyAndVisible()
+
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let vc = storyboard.instantiateViewController(identifier: "tabBarController")
+        window.rootViewController = vc
+        
+        
         guard let _ = (scene as? UIWindowScene) else { return }
     }
 

@@ -1,0 +1,20 @@
+PODS:
+  - PKHUD (5.3.0)
+  - XLPagerTabStrip (9.0.0)
+
+DEPENDENCIES:
+  - PKHUD
+  - XLPagerTabStrip (~> 9.0)
+
+SPEC REPOS:
+  trunk:
+    - PKHUD
+    - XLPagerTabStrip
+
+SPEC CHECKSUMS:
+  PKHUD: 98f3e4bc904b9c916f1c5bb6d765365b5357291b
+  XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
+
+PODFILE CHECKSUM: 7f688c2ba1d68f87cbb0757db428c4ebecb37c60
+
+COCOAPODS: 1.11.2
