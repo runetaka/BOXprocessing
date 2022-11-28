@@ -9,7 +9,8 @@ import XLPagerTabStrip // ライブラリをインポートする
 
 // デフォルトで継承している UIViewController を ButtonBarPagerTabStripViewController に書き換える
 class ParentViewController: ButtonBarPagerTabStripViewController {
-  // …
+    @IBOutlet weak var settingButton: UIButton!
+    // …
     override func viewDidLoad() {
            
            //バーの色
@@ -51,6 +52,7 @@ class ParentViewController: ButtonBarPagerTabStripViewController {
            super.viewDidLoad()
            self.navigationController?.navigationBar.isHidden = true
 
+        settingButton.addTarget(self, action: #selector(tappedSettingButton), for: .touchUpInside)
               // Do any additional setup after loading the view, typically from a nib.
           }
 //       func setupNavigationTitle(){
@@ -64,6 +66,13 @@ class ParentViewController: ButtonBarPagerTabStripViewController {
 //           self.navigationItem.leftBarButtonItem = titleItem
 //       }
 
+    @objc func tappedSettingButton(){
+        let sb = UIStoryboard(name: "PipeSettingView", bundle: nil)
+        let vc = sb.instantiateViewController(withIdentifier: "PipeSettingViewController") as! PipeSettingViewController
+        let nav = UINavigationController(rootViewController: vc)
+        nav.modalPresentationStyle = .fullScreen
+        self.present(nav, animated: true)
+    }
           override func didReceiveMemoryWarning() {
               super.didReceiveMemoryWarning()
               // Dispose of any resources that can be recreated.

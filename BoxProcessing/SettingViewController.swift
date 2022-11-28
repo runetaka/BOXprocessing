@@ -19,6 +19,7 @@ class SettingViewController:UIViewController, UITableViewDelegate{
         let label = UILabel()
         label.text = "設定"
         self.navigationController?.navigationItem.leftBarButtonItem =  UIBarButtonItem(customView: label)
+        
     }
 
 }

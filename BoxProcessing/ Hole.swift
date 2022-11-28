@@ -30,6 +30,7 @@ class Diameter{
         case G28
         case G36
         
+        
         var name:String{
             switch self{
             case .G16: return "G16"
@@ -80,6 +81,7 @@ class Diameter{
 class Result{
     var x : Float
     var y : Float
+    var interval : Float?
     
     init(x:Float,y:Float){
         self.x = x
