@@ -23,10 +23,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <textField hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="ZxO-jv-dSZ">
-                        <rect key="frame" x="283" y="0.0" width="80" height="45"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="80" id="dx2-t2-omj"/>
-                        </constraints>
+                        <rect key="frame" x="210" y="0.0" width="153" height="45"/>
                         <fontDescription key="fontDescription" type="system" weight="medium" pointSize="19"/>
                         <textInputTraits key="textInputTraits" keyboardType="decimalPad"/>
                     </textField>
@@ -44,6 +41,7 @@
                     </label>
                 </subviews>
                 <constraints>
+                    <constraint firstItem="ZxO-jv-dSZ" firstAttribute="leading" secondItem="U1s-tf-KMs" secondAttribute="trailing" constant="100" id="ACn-DA-5VQ"/>
                     <constraint firstItem="U1s-tf-KMs" firstAttribute="top" secondItem="fuC-fP-fTM" secondAttribute="top" constant="10" id="BRV-D0-Dcm"/>
                     <constraint firstItem="GBO-21-AQN" firstAttribute="centerY" secondItem="fuC-fP-fTM" secondAttribute="centerY" id="DPu-cD-guB"/>
                     <constraint firstItem="9N6-fB-9uZ" firstAttribute="centerY" secondItem="fuC-fP-fTM" secondAttribute="centerY" id="IIq-Ym-dRM"/>

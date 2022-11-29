@@ -19,6 +19,9 @@ class PipeSettingViewController: UIViewController {
     var userSetting : [String:Float] = [:]
     var isLoaded = false
     var selectedIndex : IndexPath?
+    
+    var offset: CGPoint? //keyboard
+
 
     @IBOutlet weak var tableView: UITableView!
     
@@ -39,6 +42,10 @@ class PipeSettingViewController: UIViewController {
         self.navigationItem.rightBarButtonItems = [resetButton,saveButton]
         self.navigationItem.leftBarButtonItem = dismissButton
         
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+        
         if let setting = UserDefaults.standard.dictionary(forKey: "pipe") as? [String:Float]{
             self.userSetting = setting
             self.isLoaded = true
@@ -53,6 +60,8 @@ class PipeSettingViewController: UIViewController {
         
         HUD.flash(.labeledSuccess(title: "保存しました", subtitle: nil),delay: 0.5)
     }
+    
+    
     
     @objc func tappedDismissButton(){
         if let setting = UserDefaults.standard.dictionary(forKey: "pipe") as? [String:Float] {
@@ -135,6 +144,29 @@ class PipeSettingViewController: UIViewController {
         self.view.endEditing(true)
     }
     
+    @objc func keyboardWillShow(_ notification: NSNotification) {
+      
+           offset = tableView.contentOffset
+           if let keyboardHeight = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue.height {
+               tableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: keyboardHeight, right: 0)
+               tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardHeight, right: 0)
+               UIView.animate(withDuration: 0.2, animations: {
+                   self.view.layoutIfNeeded()
+               })
+           }
+       }
+
+       @objc func keyboardWillHide(_ notification: NSNotification) {
+         
+           UIView.animate(withDuration: 0.2, animations: {
+               if let unwrappedOffset = self.offset {
+                   self.tableView.contentOffset = unwrappedOffset
+               }
+               self.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+               self.tableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+           })
+           
+       }
 }
 
 extension PipeSettingViewController:UITableViewDelegate,UITableViewDataSource{

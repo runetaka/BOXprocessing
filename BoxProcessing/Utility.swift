@@ -451,5 +451,37 @@ extension UIBezierPath {
         self.addLine(to: arrowLine2)
         }
     }
+    
+    func addArrowIntervalPipes(start:CGPoint,end:CGPoint,lineTopY:CGFloat,pointerLineLength: CGFloat, arrowAngle: CGFloat,lineWidth:CGFloat){
+        self.move(to: start)
+        self.addLine(to: CGPoint(x: start.x, y: lineTopY - 10))
+        self.move(to:  CGPoint(x: start.x, y: lineTopY))
+        let startEndAngle = atan((end.y - start.y) / (end.x - start.x)) + ((end.x - start.x) < 0 ? CGFloat(Double.pi) : 0)
+        let arrowLineStart1 = CGPoint(x: start.x + pointerLineLength * cos(startEndAngle + arrowAngle), y:  lineTopY + pointerLineLength * sin(startEndAngle + arrowAngle))
+        let arrowLineStart2 = CGPoint(x: start.x + pointerLineLength * cos(arrowAngle - startEndAngle), y: lineTopY - pointerLineLength * sin(arrowAngle - startEndAngle))
+        
+        self.addLine(to: arrowLineStart1)
+        self.move(to: CGPoint(x: start.x, y: lineTopY))
+        self.addLine(to: arrowLineStart2)
+        self.move(to: CGPoint(x: start.x, y: lineTopY))
+        
+        
+        self.addLine(to: CGPoint(x: end.x, y: lineTopY ))
+        
+        let arrowLine1 = CGPoint(x: end.x + pointerLineLength * cos(CGFloat(Double.pi) - startEndAngle + arrowAngle), y: lineTopY - pointerLineLength * sin(CGFloat(Double.pi) - startEndAngle + arrowAngle))
+        let arrowLine2 = CGPoint(x: end.x + pointerLineLength * cos(CGFloat(Double.pi) - startEndAngle - arrowAngle), y: lineTopY - pointerLineLength * sin(CGFloat(Double.pi) - startEndAngle - arrowAngle))
+        
+        
+        self.addLine(to: arrowLine1)
+        self.move(to: CGPoint(x: end.x, y: lineTopY))
+        self.addLine(to: arrowLine2)
+        self.move(to: CGPoint(x: end.x, y: lineTopY))
+        self.addLine(to: CGPoint(x: end.x, y: lineTopY - 10))
+        self.move(to: CGPoint(x: end.x, y: lineTopY))
+        self.addLine(to: end)
+
+
+        
+    }
 
 }

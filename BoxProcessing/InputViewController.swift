@@ -47,7 +47,6 @@ class InputViewController: UIViewController {
     var values :  [Any] = []
     
     var offset: CGPoint?
-    var keyboardIsShown:Bool = false
     
     
     //結果
@@ -154,6 +153,7 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
             
             switch(indexPath.row){
             case 0:
+                staticCell.inputTextField.inputView = nil
                 if let boxLength = self.boxLength{
                     print(boxLength)
                     staticCell.numberLabel.text = String(boxLength)
@@ -166,6 +166,7 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
                     staticCell.numberLabel.textColor = .placeholderText
                 }
             case 1:
+                staticCell.inputTextField.inputView = nil
                 if let pipeInterval = self.pipeInterval{
                     print(pipeInterval)
                     staticCell.numberLabel.text = String(pipeInterval)
@@ -178,6 +179,8 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
                     staticCell.numberLabel.textColor = .placeholderText
                 }
             case 2:
+                staticCell.inputTextField.inputView = nil
+
                 if let railHeight = self.railHeight{
                     print(railHeight)
                     staticCell.numberLabel.text = String(railHeight)
@@ -191,6 +194,8 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
                 }
                 
             case 3:
+                staticCell.inputTextField.inputView = nil
+
                 if let railEx = self.railEx{
                     print(railEx)
                     staticCell.numberLabel.text = String(railEx)
@@ -216,7 +221,9 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
 //                    staticCell.numberLabel.textColor = .placeholderText
 //                }
             case 5:
+                staticCell.inputTextField.inputView = nil
                 staticCell.inputTextField.tag = 5
+                staticCell.inputTextField.keyboardType = .numberPad
                 if let pipeNumText = self.pipeNumText{
                     print(pipeNumText)
                     staticCell.numberLabel.text = String(pipeNumText)
@@ -279,7 +286,7 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
         let nextItem = UIBarButtonItem(image: UIImage(systemName: "chevron.down"), style: .plain, target: self, action: #selector(tappedNextButton))
         let backItem = UIBarButtonItem(image: UIImage(systemName: "chevron.up"), style: .plain, target: self, action: #selector(tappedBackButton))
         let cancelItem = UIBarButtonItem(title: "キャンセル", style: .done, target: self, action: #selector(cancel))
-        let doneItem = UIBarButtonItem(title: "決定", style: .done, target: self,action: #selector(save))
+        let doneItem = UIBarButtonItem(title: "決定", style: .done, target: self,action: #selector(tappedSaveButton))
         
         if indexPath.row < staticCellStrings.count{
             
@@ -298,14 +305,12 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
 //                if let float = boxLength{
 //                    cell.inputTextField.text = String(float)
 //                }
+                
                 cell.inputTextField.isHidden = false
                 cell.numberLabel.isHidden = true
                 toolbar.setItems([nextItem,spacelItem,titleItem,spacelItem,doneItem], animated: true)
 
             case 1:
-//                if let float = pipeInterval{
-//                    cell.inputTextField.text = String(float)
-//                }
                 cell.inputTextField.isHidden = false
                 cell.numberLabel.isHidden = true
                 toolbar.setItems([backItem,nextItem,spacelItem,titleItem,spacelItem,doneItem], animated: true)
@@ -362,94 +367,77 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
         }
         
     }
-    func didSelectRowbefore(indexPath:IndexPath){
-       
-        if let beforeIndex = self.selectedIndex{
+    
+    @objc func tappedNextButton(){
+        guard let currentIndex = selectedIndex else{return}
+        
+        let cellRect = tableView.rectForRow(at: currentIndex)
+        let cellRectInView = tableView.convert(cellRect, to: self.view)
+        if tableView.frame.minY + tableView.verticalScrollIndicatorInsets.top <= cellRectInView.minY && cellRectInView.maxY <= tableView.frame.maxY { print("収まっている")
             self.save()
-            if let beforeCell =  tableView.cellForRow(at: beforeIndex) as? StaticTableViewCell{
-                beforeCell.inputTextField.isHidden = true
-                beforeCell.numberLabel.isHidden = false
-                if beforeIndex.row < 4 && beforeCell.numberLabel.text != "未設定"{
-                    beforeCell.mmLabel.isHidden = false
+            let nextIndex = IndexPath(row: currentIndex.row + 1, section: 0)
+            self.selectedIndex = nextIndex
+            self.tableView.selectRow(at: nextIndex, animated: true, scrollPosition: .top)
+            self.didSelectRow(indexPath: nextIndex)
+        } else {
+            print("収まっていない")
+            self.tableView.scrollToRow(at: currentIndex, at: .top, animated: true)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                self.save()
+                let nextIndex = IndexPath(row: currentIndex.row + 1, section: 0)
+                self.selectedIndex = nextIndex
+                self.tableView.selectRow(at: nextIndex, animated: true, scrollPosition: .top)
+                self.didSelectRow(indexPath: nextIndex)
+            }
+            
+        }
+        
+        
+    }
+    @objc func tappedBackButton(){
+        guard let currentIndex = selectedIndex else{return}
+        let cellRect = tableView.rectForRow(at: currentIndex)
+        let cellRectInView = tableView.convert(cellRect, to: self.view)
+        if tableView.frame.minY + tableView.verticalScrollIndicatorInsets.top <= cellRectInView.minY && cellRectInView.maxY <= tableView.frame.maxY { print("収まっている")
+            self.save()
+            if currentIndex.row != 0{
+                let previousIndex = IndexPath(row: currentIndex.row - 1, section: 0)
+                selectedIndex = previousIndex
+                self.tableView.selectRow(at: previousIndex, animated: true, scrollPosition: .top)
+                self.didSelectRow(indexPath: previousIndex)
+            }
+        } else {
+            print("収まっていない")
+            self.tableView.scrollToRow(at: currentIndex, at: .top, animated: true)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                if currentIndex.row != 0{
+                    let previousIndex = IndexPath(row: currentIndex.row - 1, section: 0)
+                    self.selectedIndex = previousIndex
+                    self.tableView.selectRow(at: previousIndex, animated: false, scrollPosition: .top)
+                    self.didSelectRow(indexPath: previousIndex)
                 }
                 
-            }else if let beforeCell = tableView.cellForRow(at: beforeIndex) as? DynamicTableViewCell{
-                beforeCell.inputTextField.isHidden = true
-                beforeCell.numberLabel.isHidden = false
             }
-        }
-        
-        let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 45))
-        let spacelItem = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
-        
-        let nextItem = UIBarButtonItem(image: UIImage(systemName: "chevron.down"), style: .plain, target: self, action: #selector(tappedNextButton))
-        let backItem = UIBarButtonItem(image: UIImage(systemName: "chevron.up"), style: .plain, target: self, action: #selector(tappedBackButton))
-        let cancelItem = UIBarButtonItem(title: "キャンセル", style: .done, target: self, action: #selector(cancel))
-        let doneItem = UIBarButtonItem(title: "決定", style: .done, target: self,action: #selector(save))
-       
-        
-        if indexPath.row < staticCellStrings.count{
-            
-            self.selectedIndex = indexPath
-            let cell = tableView.cellForRow(at: indexPath) as! StaticTableViewCell
-            cell.inputTextField.inputAccessoryView = toolbar
-            let label = UILabel()
-            label.text = self.staticCellStrings[indexPath.row]
-            let titleItem = UIBarButtonItem(customView: label)
-            if let string = self.fields[indexPath.row].stringValue{
-                cell.inputTextField.text = string
-            }else if let float = self.fields[indexPath.row].value{
-                cell.inputTextField.text = String(float)
-            }
-            cell.inputTextField.becomeFirstResponder()
-        if indexPath.row == 0{
-            cell.inputTextField.isHidden = false
-            cell.numberLabel.isHidden = true
-            toolbar.setItems([nextItem,spacelItem,titleItem,spacelItem,doneItem], animated: true)
-        }else if indexPath.row == 4 || indexPath.row == 5{
-            toolbar.setItems([cancelItem,spacelItem,titleItem,spacelItem,doneItem], animated: true)
-        }else{
-            cell.inputTextField.isHidden = false
-            cell.numberLabel.isHidden = true
-            toolbar.setItems([backItem,nextItem,spacelItem,titleItem,spacelItem,doneItem], animated: true)
-        }
-        }else{
-            //dynamicCellタップ時
-            self.selectedIndex = indexPath
-            let dynamicCell = tableView.cellForRow(at: indexPath) as! DynamicTableViewCell
-            let type = pipeTypePickerView.selectedRow(inComponent: 0)
-            dynamicCell.inputTextField.isHidden = false
-            dynamicCell.numberLabel.isHidden = true
-            let label = UILabel()
-            label.text = dynamicCell.nameLabel.text
-            let titleItem = UIBarButtonItem(customView: label)
-            dynamicCell.inputTextField.becomeFirstResponder()
-            toolbar.setItems([cancelItem,spacelItem,titleItem,spacelItem,doneItem], animated: true)
-
         }
     }
     
-    @objc func tappedNextButton(){
-        self.save()
-        guard let currentIndex = selectedIndex else{return}
-     
-        let nextIndex = IndexPath(row: currentIndex.row + 1, section: 0)
-        selectedIndex = nextIndex
-        self.tableView.selectRow(at: nextIndex, animated: true, scrollPosition: .top)
-        self.didSelectRow(indexPath: nextIndex)
-    }
-    @objc func tappedBackButton(){
-        self.save()
-        guard let currentIndex = selectedIndex else{return}
-        if currentIndex.row != 0{
-        let previousIndex = IndexPath(row: currentIndex.row - 1, section: 0)
-        selectedIndex = previousIndex
-        self.tableView.selectRow(at: previousIndex, animated: true, scrollPosition: .top)
-        self.didSelectRow(indexPath: previousIndex)
+    @objc func tappedSaveButton(){
+        guard let indexPath = self.selectedIndex else{return}
+        let cellRect = tableView.rectForRow(at: indexPath)
+        let cellRectInView = tableView.convert(cellRect, to: self.view)
+        if tableView.frame.minY + tableView.verticalScrollIndicatorInsets.top <= cellRectInView.minY && cellRectInView.maxY <= tableView.frame.maxY { print("収まっている")
+            self.save()
+        }else{
+            self.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                self.save()
+            }
         }
     }
+    
     @objc func save(){
         guard let indexPath = self.selectedIndex else{return}
+      
         if staticCellStrings.count > indexPath.row{
             guard let cell = tableView.cellForRow(at:indexPath) as? StaticTableViewCell else{return}
             cell.inputTextField.isHidden = true
@@ -765,20 +753,46 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
     
     
     
-    func textFieldDidChangeSelection(_ textField: UITextField) {
-
-        guard let password = textField.text else { return }
-        if textField.tag == 5{
-        if password.count > 2 {
-            textField.text = String(password.prefix(2))
-        }
-        }else{
-            if password.count > 4 {
-                textField.text = String(password.prefix(4))
-            }
-        }
-    }
+//    func textFieldDidChangeSelection(_ textField: UITextField) {
+//
+////        guard let password = textField.text else { return }
+////        if textField.tag == 5{
+////        if password.count > 2 {
+////            textField.text = String(password.prefix(2))
+////        }
+////        }else{
+////            if password.count > 4 {
+//        //                textField.text = String(password.prefix(4))
+//        //            }
+//        //        }
+//
+//        guard let text = textField.text else { return }
+//        guard let intText = Float(text) else { textField.text = ""; return }
+//        if textField.tag != 5{
+//            if intText > 9999 {
+//                textField.text = text.substring(to: text.index(text.startIndex, offsetBy: 3))
+//            }
+//        }else{
+//            if intText > 100 {
+//                textField.text = text.substring(to: text.index(text.startIndex, offsetBy: 2))
+//            }
+//        }
+//    }
     
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
+        let newText = NSString(string: textField.text!).replacingCharacters(in: range, with: string)
+        var maxValue : Float = 9999
+        if selectedIndex?.row == 5{
+            maxValue = 100
+        }
+      if newText.isEmpty {
+        return true
+      }else if let floatValue = Float(newText), floatValue <= maxValue {
+        return true
+      }
+      return false
+    }
     
     
 }
@@ -884,6 +898,7 @@ extension InputViewController :UIPickerViewDelegate,UIPickerViewDataSource{
            offset = tableView.contentOffset
            if let keyboardHeight = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue.height {
                tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardHeight, right: 0)
+               tableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: keyboardHeight, right: 0)
                resetButtonBottom.constant = keyboardHeight - 60
                calcButtonBottom.constant = keyboardHeight - 60
                UIView.animate(withDuration: 0.2, animations: {
@@ -902,6 +917,7 @@ extension InputViewController :UIPickerViewDelegate,UIPickerViewDataSource{
                    self.tableView.contentOffset = unwrappedOffset
                }
                self.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+               self.tableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
            })
            
        }
