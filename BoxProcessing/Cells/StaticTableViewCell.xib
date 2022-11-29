@@ -4,6 +4,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -27,7 +28,7 @@
                             <constraint firstAttribute="width" constant="80" id="dx2-t2-omj"/>
                         </constraints>
                         <fontDescription key="fontDescription" type="system" weight="medium" pointSize="19"/>
-                        <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
+                        <textInputTraits key="textInputTraits" keyboardType="decimalPad"/>
                     </textField>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="mm" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9N6-fB-9uZ">
                         <rect key="frame" x="368" y="13.5" width="26" height="18"/>
@@ -52,7 +53,7 @@
                     <constraint firstAttribute="bottom" secondItem="U1s-tf-KMs" secondAttribute="bottom" constant="10" id="eLm-kz-IIX"/>
                     <constraint firstAttribute="bottom" secondItem="ZxO-jv-dSZ" secondAttribute="bottom" id="g94-e0-9fe"/>
                     <constraint firstItem="9N6-fB-9uZ" firstAttribute="leading" secondItem="ZxO-jv-dSZ" secondAttribute="trailing" constant="5" id="hSU-ev-9xq"/>
-                    <constraint firstItem="U1s-tf-KMs" firstAttribute="leading" secondItem="fuC-fP-fTM" secondAttribute="leadingMargin" constant="20" id="oTD-YM-N7u"/>
+                    <constraint firstItem="U1s-tf-KMs" firstAttribute="leading" secondItem="fuC-fP-fTM" secondAttribute="leading" constant="40" id="oTD-YM-N7u"/>
                     <constraint firstItem="U1s-tf-KMs" firstAttribute="centerY" secondItem="fuC-fP-fTM" secondAttribute="centerY" id="u3n-rX-2Tt"/>
                 </constraints>
             </tableViewCellContentView>

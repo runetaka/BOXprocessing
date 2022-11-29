@@ -374,9 +374,62 @@ extension UIBezierPath {
         return self.init(cgPath: path)
     }
     
+//    func addArrow(start: CGPoint, end: CGPoint, pointerLineLength: CGFloat, arrowAngle: CGFloat,lineWidth:CGFloat,isOver:Bool) {
+//          self.move(to: start)
+//
+//        let startEndAngle = atan((end.y - start.y) / (end.x - start.x)) + ((end.x - start.x) < 0 ? CGFloat(Double.pi) : 0)
+//        let arrowLineStart1 = CGPoint(x: start.x + pointerLineLength * cos(startEndAngle + arrowAngle), y:  start.y + pointerLineLength * sin(startEndAngle + arrowAngle))
+//        let arrowLineStart2 = CGPoint(x: start.x + pointerLineLength * cos(arrowAngle - startEndAngle), y: start.y - pointerLineLength * sin(arrowAngle - startEndAngle))
+//
+//        self.addLine(to: arrowLineStart1)
+//        self.move(to: start)
+//        self.addLine(to: arrowLineStart2)
+//        self.move(to: start)
+//
+//
+//        self.addLine(to: end)
+//
+//        let arrowLine1 = CGPoint(x: end.x + pointerLineLength * cos(CGFloat(Double.pi) - startEndAngle + arrowAngle), y: end.y - pointerLineLength * sin(CGFloat(Double.pi) - startEndAngle + arrowAngle))
+//        let arrowLine2 = CGPoint(x: end.x + pointerLineLength * cos(CGFloat(Double.pi) - startEndAngle - arrowAngle), y: end.y - pointerLineLength * sin(CGFloat(Double.pi) - startEndAngle - arrowAngle))
+//
+//
+//        self.addLine(to: arrowLine1)
+//        self.move(to: end)
+//        self.addLine(to: arrowLine2)
+//        if isOver{
+//            self.move(to: end)
+//            let overPoint = CGPoint(x: end.x, y: end.y + 50)
+//            self.addLine(to: overPoint)
+//        }
+//    }
+    
     func addArrow(start: CGPoint, end: CGPoint, pointerLineLength: CGFloat, arrowAngle: CGFloat,lineWidth:CGFloat,isOver:Bool) {
-          self.move(to: start)
-         
+        self.move(to: start)
+        
+        if isOver{
+            self.addLine(to: CGPoint(x: start.x, y: start.y - 20))
+            self.move(to: start)
+            
+            let startEndAngle = atan((end.y - start.y) / (end.x - start.x)) + ((end.x - start.x) < 0 ? CGFloat(Double.pi) : 0)
+            let arrowLineStart1 = CGPoint(x: start.x + pointerLineLength * cos(startEndAngle + arrowAngle), y:  start.y - pointerLineLength * sin(startEndAngle + arrowAngle))
+            let arrowLineStart2 = CGPoint(x: start.x + pointerLineLength * cos(arrowAngle - startEndAngle), y: start.y + pointerLineLength * sin(arrowAngle - startEndAngle))
+            
+            self.addLine(to: arrowLineStart1)
+            self.move(to: start)
+            self.addLine(to: arrowLineStart2)
+            self.move(to: start)
+            let overPoint = CGPoint(x: end.x, y: end.y + 50)
+            self.addLine(to: overPoint)
+            self.move(to: end)
+            
+            let arrowLine1 = CGPoint(x: end.x + pointerLineLength * cos(CGFloat(Double.pi) - startEndAngle + arrowAngle), y: end.y + pointerLineLength * sin(CGFloat(Double.pi) - startEndAngle + arrowAngle))
+            let arrowLine2 = CGPoint(x: end.x + pointerLineLength * cos(CGFloat(Double.pi) - startEndAngle - arrowAngle), y: end.y + pointerLineLength * sin(CGFloat(Double.pi) - startEndAngle - arrowAngle))
+            
+            self.addLine(to: arrowLine1)
+            self.move(to: end)
+            self.addLine(to: arrowLine2)
+
+        }else{
         let startEndAngle = atan((end.y - start.y) / (end.x - start.x)) + ((end.x - start.x) < 0 ? CGFloat(Double.pi) : 0)
         let arrowLineStart1 = CGPoint(x: start.x + pointerLineLength * cos(startEndAngle + arrowAngle), y:  start.y + pointerLineLength * sin(startEndAngle + arrowAngle))
         let arrowLineStart2 = CGPoint(x: start.x + pointerLineLength * cos(arrowAngle - startEndAngle), y: start.y - pointerLineLength * sin(arrowAngle - startEndAngle))
@@ -396,10 +449,7 @@ extension UIBezierPath {
         self.addLine(to: arrowLine1)
         self.move(to: end)
         self.addLine(to: arrowLine2)
-        if isOver{
-            self.move(to: end)
-            let overPoint = CGPoint(x: end.x, y: end.y + 50)
-            self.addLine(to: overPoint)
         }
     }
+
 }

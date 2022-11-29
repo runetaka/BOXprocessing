@@ -17,6 +17,9 @@ class ResultTableViewCell: UITableViewCell {
     
     @IBOutlet weak var ypositionLabel: UILabel!
     
+    @IBOutlet weak var xmmLabel: UILabel!
+    @IBOutlet weak var ymmLabel: UILabel!
+    
     override func awakeFromNib() {
     super.awakeFromNib()
     // Initialization code

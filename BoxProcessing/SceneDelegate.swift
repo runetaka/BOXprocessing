@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import Siren
+
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -13,6 +15,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+        
+        forceUpdate()
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
@@ -37,6 +41,31 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         
         guard let _ = (scene as? UIWindowScene) else { return }
+    }
+    
+    private func forceUpdate(){
+        let siren = Siren.shared
+        
+        siren.presentationManager = PresentationManager(forceLanguageLocalization: .japanese)
+        siren.apiManager = APIManager(country: .japan)
+        siren.rulesManager = RulesManager(
+            majorUpdateRules: Rules(promptFrequency: .immediately, forAlertType: .force), // A.b.c.d
+            minorUpdateRules: Rules(promptFrequency: .immediately, forAlertType: .force), // a.B.c.d
+            patchUpdateRules: Rules(promptFrequency: .daily, forAlertType: .option), // a.b.C.d
+            revisionUpdateRules: Rules(promptFrequency: .daily, forAlertType: .option) // a.b.c.D
+        )
+        
+        siren.wail { results in
+                 switch results {
+                 case .success(let updateResults):
+                     print("AlertAction ", updateResults.alertAction)
+                     print("Localization ", updateResults.localization)
+                     print("Model ", updateResults.model)
+                     print("UpdateType ", updateResults.updateType)
+                 case .failure(let error):
+                     print(error.localizedDescription)
+                 }
+             }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

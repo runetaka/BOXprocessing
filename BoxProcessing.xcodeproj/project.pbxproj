@@ -28,6 +28,9 @@
 		3E9591A028CC80F900AE98AB /*  Hole.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E95919F28CC80F900AE98AB /*  Hole.swift */; };
 		3E9A25C82934072900FEED55 /* PipeSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E9A25C72934072900FEED55 /* PipeSettingViewController.swift */; };
 		3E9A25CA2934075700FEED55 /* PipeSettingView.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3E9A25C92934075700FEED55 /* PipeSettingView.storyboard */; };
+		3E9A25CC2934C12800FEED55 /* RailLengthHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E9A25CB2934C12800FEED55 /* RailLengthHeaderView.swift */; };
+		3E9A25CE2934C16B00FEED55 /* RailLengthHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3E9A25CD2934C16B00FEED55 /* RailLengthHeaderView.xib */; };
+		3E9A25D029363A9400FEED55 /* SettingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E9A25CF29363A9300FEED55 /* SettingTableViewCell.swift */; };
 		3EAB1E5128CEED7A00E9BEBF /* FiledValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EAB1E5028CEED7A00E9BEBF /* FiledValue.swift */; };
 		3EB5742B292CF4B300A589EF /* ResultTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3EB5742A292CF4B300A589EF /* ResultTableViewCell.xib */; };
 		3EB5742D292D07A300A589EF /* ResultTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EB5742C292D07A300A589EF /* ResultTableViewCell.swift */; };
@@ -84,6 +87,9 @@
 		3E95919F28CC80F900AE98AB /*  Hole.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = " Hole.swift"; sourceTree = "<group>"; };
 		3E9A25C72934072900FEED55 /* PipeSettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PipeSettingViewController.swift; sourceTree = "<group>"; };
 		3E9A25C92934075700FEED55 /* PipeSettingView.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = PipeSettingView.storyboard; sourceTree = "<group>"; };
+		3E9A25CB2934C12800FEED55 /* RailLengthHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RailLengthHeaderView.swift; sourceTree = "<group>"; };
+		3E9A25CD2934C16B00FEED55 /* RailLengthHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RailLengthHeaderView.xib; sourceTree = "<group>"; };
+		3E9A25CF29363A9300FEED55 /* SettingTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingTableViewCell.swift; sourceTree = "<group>"; };
 		3EAB1E5028CEED7A00E9BEBF /* FiledValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FiledValue.swift; sourceTree = "<group>"; };
 		3EB5742A292CF4B300A589EF /* ResultTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ResultTableViewCell.xib; sourceTree = "<group>"; };
 		3EB5742C292D07A300A589EF /* ResultTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultTableViewCell.swift; sourceTree = "<group>"; };
@@ -169,6 +175,8 @@
 				3EB57430292D0EC900A589EF /* ResultTableViewHeader.swift */,
 				3E9A25C72934072900FEED55 /* PipeSettingViewController.swift */,
 				3E9A25C92934075700FEED55 /* PipeSettingView.storyboard */,
+				3E9A25CB2934C12800FEED55 /* RailLengthHeaderView.swift */,
+				3E9A25CD2934C16B00FEED55 /* RailLengthHeaderView.xib */,
 			);
 			path = BoxProcessing;
 			sourceTree = "<group>";
@@ -199,6 +207,7 @@
 				3EB5742A292CF4B300A589EF /* ResultTableViewCell.xib */,
 				3EB5742C292D07A300A589EF /* ResultTableViewCell.swift */,
 				3E95919528CC75B000AE98AB /* StaticTableViewCell.swift */,
+				3E9A25CF29363A9300FEED55 /* SettingTableViewCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -339,6 +348,7 @@
 				3E6289B628CC6127003E20F6 /* LaunchScreen.storyboard in Resources */,
 				3EB5742F292D0C2F00A589EF /* ResultTableViewHeader.xib in Resources */,
 				3E6289B328CC6127003E20F6 /* Assets.xcassets in Resources */,
+				3E9A25CE2934C16B00FEED55 /* RailLengthHeaderView.xib in Resources */,
 				3EB5742B292CF4B300A589EF /* ResultTableViewCell.xib in Resources */,
 				3E8C7F6128CD84B8006A3000 /* DynamicTableViewCell.xib in Resources */,
 				3E6289B128CC6124003E20F6 /* Main.storyboard in Resources */,
@@ -473,12 +483,14 @@
 				3E6289AE28CC6124003E20F6 /* InputViewController.swift in Sources */,
 				3EB57431292D0EC900A589EF /* ResultTableViewHeader.swift in Sources */,
 				3E4B235028E01827002D52DA /* SettingViewController.swift in Sources */,
+				3E9A25CC2934C12800FEED55 /* RailLengthHeaderView.swift in Sources */,
 				3E95919A28CC78CF00AE98AB /* ParentViewController.swift in Sources */,
 				3E95919E28CC7B3B00AE98AB /* ResultViewController.swift in Sources */,
 				3E8C7F6028CD84B8006A3000 /* DynamicTableViewCell.swift in Sources */,
 				3EAB1E5128CEED7A00E9BEBF /* FiledValue.swift in Sources */,
 				3E9A25C82934072900FEED55 /* PipeSettingViewController.swift in Sources */,
 				3E95919C28CC7AA900AE98AB /* Utility.swift in Sources */,
+				3E9A25D029363A9400FEED55 /* SettingTableViewCell.swift in Sources */,
 				3E6289AA28CC6124003E20F6 /* AppDelegate.swift in Sources */,
 				3E6289AC28CC6124003E20F6 /* SceneDelegate.swift in Sources */,
 				3EB5742D292D07A300A589EF /* ResultTableViewCell.swift in Sources */,
@@ -665,6 +677,7 @@
 				DEVELOPMENT_TEAM = 667P28VCK6;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BoxProcessing/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "BOX加工";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -675,8 +688,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = ZEEMA.BoxProcessing;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Ikejimadenki.BOX;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -695,6 +708,7 @@
 				DEVELOPMENT_TEAM = 667P28VCK6;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BoxProcessing/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "BOX加工";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -705,8 +719,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = ZEEMA.BoxProcessing;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Ikejimadenki.BOX;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

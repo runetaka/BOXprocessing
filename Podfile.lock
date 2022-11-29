@@ -1,20 +1,32 @@
 PODS:
+  - Instructions (2.2.0)
   - PKHUD (5.3.0)
+  - Siren (5.8.1)
   - XLPagerTabStrip (9.0.0)
+  - youtube-ios-player-helper (1.0.4)
 
 DEPENDENCIES:
+  - Instructions (~> 2.2.0)
   - PKHUD
+  - Siren
   - XLPagerTabStrip (~> 9.0)
+  - youtube-ios-player-helper (~> 1.0.4)
 
 SPEC REPOS:
   trunk:
+    - Instructions
     - PKHUD
+    - Siren
     - XLPagerTabStrip
+    - youtube-ios-player-helper
 
 SPEC CHECKSUMS:
+  Instructions: 07052901a398b42eb1d83de9755b8a0bac3e2f7d
   PKHUD: 98f3e4bc904b9c916f1c5bb6d765365b5357291b
+  Siren: de768099aff1f1c9acda4247064788a4940b4bf3
   XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
+  youtube-ios-player-helper: e9b97535e816db3152179d84d999bc1807ecd689
 
-PODFILE CHECKSUM: 7f688c2ba1d68f87cbb0757db428c4ebecb37c60
+PODFILE CHECKSUM: 75d45e3c84d1910373b8970628ce3a0742d1b793
 
 COCOAPODS: 1.11.2

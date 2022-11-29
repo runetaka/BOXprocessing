@@ -38,7 +38,7 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="multiply.circle.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="IkQ-bX-H7A">
+                            <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="multiply.circle.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="IkQ-bX-H7A">
                                 <rect key="frame" x="5" y="5.5" width="25" height="24"/>
                                 <color key="tintColor" red="0.92941176469999998" green="0.47058823529999999" blue="0.4039215686" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
@@ -80,6 +80,7 @@
                 </constraints>
             </tableViewCellContentView>
             <connections>
+                <outlet property="deleteButton" destination="IkQ-bX-H7A" id="cyX-VX-evm"/>
                 <outlet property="inputTextField" destination="5fM-pq-vMy" id="V3h-Kz-UgW"/>
                 <outlet property="mmLabel" destination="G8M-cN-WtH" id="m8b-YH-DqJ"/>
                 <outlet property="nameLabel" destination="VeJ-CV-ze1" id="C6e-rU-L0b"/>

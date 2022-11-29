@@ -7,6 +7,9 @@ target 'BoxProcessing' do
 
   pod 'PKHUD' 
   pod 'XLPagerTabStrip', '~> 9.0'
+  pod "youtube-ios-player-helper", "~> 1.0.4"
+  pod "Siren"
+  pod 'Instructions', '~> 2.2.0'
 
   # Pods for BoxProcessing
 

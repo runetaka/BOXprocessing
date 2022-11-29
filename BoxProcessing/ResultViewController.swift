@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 import XLPagerTabStrip
-
+import Instructions
 
 class UserColor{
     var xColor : UIColor?
@@ -22,7 +22,9 @@ class ResultViewController:UIViewController{
     @IBOutlet weak var pullDownImage: UIImageView!
     @IBOutlet weak var pullDownLabel: UILabel!
     
-    @IBOutlet weak var pullDownTextField: UITextField!
+    @IBOutlet weak var drawingViewWidth: NSLayoutConstraint!
+    
+    @IBOutlet weak var drawingViewHeight: NSLayoutConstraint!
     
     @IBOutlet weak var drawingView: UIView!
     
@@ -47,11 +49,15 @@ class ResultViewController:UIViewController{
     var labelXPosition : CGPoint?
     var labelYPosition : CGPoint?
     
+    //tutorial
+    let coachMarksController = CoachMarksController()
+
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         scrollView.delegate  = self
         scrollView.maximumZoomScale = 8.0
-        scrollView.minimumZoomScale = 0.1
+        scrollView.minimumZoomScale = 0.5
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(UINib(nibName: "ResultTableViewCell", bundle: nil), forCellReuseIdentifier: "resultCell")
@@ -64,6 +70,9 @@ class ResultViewController:UIViewController{
         pullDownMenu.layer.borderWidth = 1.0
         pullDownMenu.layer.borderColor = UIColor.label.cgColor
         pullDownMenu.cornerRadius = 10
+        
+        coachMarksController.delegate = self
+        coachMarksController.dataSource = self
         
     }
     
@@ -104,7 +113,18 @@ class ResultViewController:UIViewController{
     func renderDrawingView(){
         //BOXと穴の描画
         guard let holes = holes,let results = results,let boxLength = boxLength,let railLength = railLength,let railEx = railEx else{return}
+        
+        
+        let contentWidth = CGFloat(boxLength + 200)
+        self.drawingViewWidth.constant = contentWidth
+        self.scrollView.contentSize = CGSize(width: contentWidth, height: 1000)
+        scrollView.minimumZoomScale = scrollView.frame.width / contentWidth
+        print(scrollView.contentSize.width,contentWidth,scrollView.frame.width, (scrollView.contentSize.width - scrollView.frame.width) / 2)
         boxView.removeFromSuperview()
+        for label in labels {
+            label.removeFromSuperview()
+            self.labels.removeFirst()
+        }
         boxView = UIView()
         let maxHole = holes.max { hole, hole1 in
             hole.diameter < hole1.diameter
@@ -117,8 +137,13 @@ class ResultViewController:UIViewController{
         boxView.heightAnchor.constraint(equalToConstant: CGFloat(boxHeight)).isActive = true
         boxView.centerXAnchor.constraint(equalTo: drawingView.centerXAnchor).isActive = true
         boxView.centerYAnchor.constraint(equalTo: drawingView.centerYAnchor).isActive = true
-        scrollView.setZoomScale(scrollView.frame.width / CGFloat(boxLength + 10.0), animated: true)
-        scrollView.setContentOffset(CGPoint(x: (scrollView.contentSize.width - scrollView.frame.width) / 2, y: (scrollView.contentSize.height - scrollView.frame.height) / 2), animated: true)
+        let zoomScale = scrollView.frame.width / CGFloat(boxLength + 20.0)
+        scrollView.setZoomScale(zoomScale, animated: true)
+        let posx = (contentWidth * zoomScale - scrollView.frame.width) / 2
+        let x = posx *  scrollView.frame.width / contentWidth / zoomScale
+        
+        scrollView.setContentOffset(CGPoint(x: posx, y: (scrollView.contentSize.height - scrollView.frame.height) / 2), animated: true)
+        print("x",x,posx,zoomScale)
         var i = 1
         for (hole,result) in zip(holes,results){
             let holeView = UIView()
@@ -137,7 +162,11 @@ class ResultViewController:UIViewController{
             holeView.tag = i
             i += 1
         }
+        
         self.tableView.reloadData()
+        
+        self.coachMarksController.start(in: .currentWindow(of: self))
+        self.coachMarksController.overlay.backgroundColor = .black.withAlphaComponent(0.7)
     }
     
     
@@ -150,63 +179,105 @@ class ResultViewController:UIViewController{
                 let lineWidth :CGFloat = 1.0
                 let midY  = (sender.center.y  +  boxView.frame.minY + boxView.frame.maxY) / 2
                 let isOver = midY - 40 / 2  + 40 > boxView.frame.maxY ? true : false
-                addLine(fromX:sender.center , toX: CGPoint(x:lineWidth / 2 , y: sender.frame.midY), fromY: sender.center, toY: CGPoint(x:sender.center.x,y: boxView.frame.height - lineWidth / 2), isOver: isOver)
-                if let result = self.results?[index]{
-                    for label in labels {
-                        label.removeFromSuperview()
-                        self.labels.removeFirst()
+                if self.calcMode == 0{
+                    addLine(fromX:sender.center , toX: CGPoint(x:lineWidth / 2 , y: sender.frame.midY), fromY: sender.center, toY: CGPoint(x:sender.center.x,y: boxView.frame.height - lineWidth / 2), isOver: isOver)
+                }else if self.calcMode == 1{
+                    if index == 0{
+                        addLine(fromX:sender.center , toX: CGPoint(x:lineWidth / 2 , y: sender.frame.midY), fromY: sender.center, toY: CGPoint(x:sender.center.x,y: boxView.frame.height - lineWidth / 2), isOver: isOver)
+                    }else{
+                        //二番目以降の穴
+                        guard let sender2 = drawingView.viewWithTag(index) else{return}
+                        addLine(fromX:sender.center , toX: CGPoint(x:lineWidth / 2 + sender2.center.x , y: sender.frame.midY), fromY: sender.center, toY: CGPoint(x:sender.center.x,y: boxView.frame.height - lineWidth / 2), isOver: isOver)
                     }
-                    let labelX = UILabel()
-                    labelX.textAlignment = .center
-                    labelX.adjustsFontSizeToFitWidth = true
-                    labelX.text = String(result.x)
-                    let width :CGFloat = 100
-                    let height :CGFloat = 40
-                    print(sender.center.x,boxView.frame.minX)
-                    let midX  = (sender.center.x + 2 * boxView.frame.minX) / 2
-                    let midY  = (sender.center.y  + 2 *  boxView.frame.minY) / 2
-                    let y = boxView.frame.minY + sender.center.y - height
-                    self.labelXPosition = CGPoint(x: midX, y: midY)
-                    labelX.frame = CGRect(x: midX - width / 2  , y: y , width: width, height: height)
-                    self.drawingView.addSubview(labelX)
-                    self.labels.append(labelX)
                 }
-//                addLabel(index: indexPath.row, sender: sender)
-
+                addLabel(index: index, sender: sender)
+                
                 
             }
         }
     }
     func addLabel(index:Int,sender:UIView){
+        let zoomScale = scrollView.zoomScale
         if let result = self.results?[index]{
             for label in labels {
                 label.removeFromSuperview()
                 self.labels.removeFirst()
             }
             let labelX = UILabel()
+            labelX.tag = 0
             labelX.textAlignment = .center
             labelX.adjustsFontSizeToFitWidth = true
-            labelX.text = String(result.x)
+            
             let width :CGFloat = 100
             let height :CGFloat = 40
             print(sender.center.x,boxView.frame.minX)
-            let midX  = (sender.center.x + 2 * boxView.frame.minX) / 2
-            let y = boxView.frame.minY + sender.center.y - height + 5
-            self.labelXPosition = CGPoint(x: midX, y: y)
-            labelX.frame = CGRect(x: midX - width / 2  , y: y , width: width, height: height)
+            var xx :CGFloat
+            var xy :CGFloat
+            if calcMode == 0{
+                labelX.text = String(result.x)
+                xx  = (sender.center.x + 2 * boxView.frame.minX) / 2 - width / 2
+                xy = boxView.frame.minY + sender.center.y - height + 5
+                labelX.frame.size = CGSize(width: 100 / zoomScale, height: 40 / zoomScale)
+                labelX.font = .systemFont(ofSize: 17 / zoomScale )
+                labelX.frame.origin = CGPoint(x: (sender.center.x + 2 * boxView.frame.minX) / 2 - 50 / zoomScale, y: boxView.frame.minY + sender.center.y - 40 / zoomScale)
+                self.labelXPosition = CGPoint(x: (sender.center.x + 2 * boxView.frame.minX) / 2, y: boxView.frame.minY + sender.center.y)
+
+            }else{
+                if let interval = result.interval{
+                    labelX.text = String(interval)
+                }
+                if index == 0{
+                    
+                    xx  = (sender.center.x + 2 * boxView.frame.minX) / 2 - width / 2
+                    xy = boxView.frame.minY + sender.center.y - height + 5
+                    labelX.frame.size = CGSize(width: 100 / zoomScale, height: 40 / zoomScale)
+                    labelX.font = .systemFont(ofSize: 17 / zoomScale )
+                    labelX.frame.origin = CGPoint(x: (sender.center.x + 2 * boxView.frame.minX) / 2 - 50 / zoomScale, y: boxView.frame.minY + sender.center.y - 40 / zoomScale)
+                    self.labelXPosition = CGPoint(x: (sender.center.x + 2 * boxView.frame.minX) / 2, y: boxView.frame.minY + sender.center.y)
+
+                }else{
+                    guard let sender2 = drawingView.viewWithTag(index) else{
+                        xx  = (sender.center.x + boxView.frame.minX) / 2 - width / 2
+                        xy = boxView.frame.minY + sender.center.y - height + 5
+                        return
+                    }
+                    xx  = (sender.center.x + 2 * boxView.frame.minX + sender2.center.x) / 2 - width / 2
+                    xy = boxView.frame.minY + sender.center.y - height + 5
+                    labelX.frame.size = CGSize(width: 100 / zoomScale, height: 40 / zoomScale)
+                    labelX.font = .systemFont(ofSize: 17 / zoomScale )
+                    labelX.frame.origin = CGPoint(x: (sender.center.x + sender2.center.x + 2 * boxView.frame.minX) / 2 - 50 / zoomScale, y: boxView.frame.minY + sender.center.y - 40 / zoomScale)
+                    self.labelXPosition = CGPoint(x: (sender.center.x + sender2.center.x + 2 * boxView.frame.minX) / 2, y: boxView.frame.minY + sender.center.y)
+
+                }
+            }
+            
             self.drawingView.addSubview(labelX)
             self.labels.append(labelX)
             
             let labelY = UILabel()
+            labelY.tag = 1
             labelY.textAlignment = .left
             labelY.adjustsFontSizeToFitWidth = true
             labelY.text = String(result.y)
             print(sender.center.x,boxView.frame.minX)
-            let x  = boxView.frame.minX + sender.center.x + 5
+            let yx  = boxView.frame.minX + sender.center.x + 5
             let midY  = (sender.center.y  +  boxView.frame.minY + boxView.frame.maxY) / 2
-            let labelYY = midY - height / 2  + height > boxView.frame.maxY ? boxView.frame.maxY : midY - height / 2
-            self.labelYPosition = CGPoint(x: x, y: midY)
-            labelY.frame = CGRect(x:x  , y: labelYY , width: width, height: height)
+            let yy = midY - height / 2  + height > boxView.frame.maxY ? boxView.frame.maxY : midY - height / 2
+            labelY.frame = CGRect(x:yx  , y: yy , width: width, height: height)
+            
+            labelY.frame.size = CGSize(width: 100 / zoomScale, height: 40 / zoomScale)
+            labelY.font = .systemFont(ofSize: 17 / zoomScale )
+
+            //倍率によってポジション調整
+            if  midY - height / 2  + height > boxView.frame.maxY{
+                self.labelYPosition = CGPoint(x: yx, y: boxView.frame.maxY)
+                labelY.frame.origin = CGPoint(x: yx, y: boxView.frame.maxY + 20 * (1 - 1 / zoomScale))
+            }else{
+                self.labelYPosition = CGPoint(x: yx, y: midY)
+                labelY.frame.origin = CGPoint(x: yx, y: midY - 20 / zoomScale)
+            }
+            //倍率によってポジション調整(ここまで)
+            
             self.drawingView.addSubview(labelY)
             self.labels.append(labelY)
         }
@@ -217,7 +288,17 @@ class ResultViewController:UIViewController{
         let lineWidth :CGFloat = 1.0
         let midY  = (sender.center.y  +  boxView.frame.minY + boxView.frame.maxY) / 2
         let isOver = midY - 40 / 2  + 40 > boxView.frame.maxY ? true : false
-        addLine(fromX:sender.center , toX: CGPoint(x:lineWidth / 2 , y: sender.frame.midY), fromY: sender.center, toY: CGPoint(x:sender.center.x,y: boxView.frame.height - lineWidth / 2), isOver: isOver)
+        if self.calcMode == 0{
+            addLine(fromX:sender.center , toX: CGPoint(x:lineWidth / 2 , y: sender.frame.midY), fromY: sender.center, toY: CGPoint(x:sender.center.x,y: boxView.frame.height - lineWidth / 2), isOver: isOver)
+        }else if self.calcMode == 1{
+            if indexPath.row == 0{
+                addLine(fromX:sender.center , toX: CGPoint(x:lineWidth / 2 , y: sender.frame.midY), fromY: sender.center, toY: CGPoint(x:sender.center.x,y: boxView.frame.height - lineWidth / 2), isOver: isOver)
+            }else{
+                //二番目以降の穴
+                guard let sender2 = drawingView.viewWithTag(indexPath.row) else{return}
+                addLine(fromX:sender.center , toX: CGPoint(x:lineWidth / 2 + sender2.center.x , y: sender.frame.midY), fromY: sender.center, toY: CGPoint(x:sender.center.x,y: boxView.frame.height - lineWidth / 2), isOver: isOver)
+            }
+        }
         addLabel(index: indexPath.row, sender: sender)
     }
     
@@ -269,10 +350,16 @@ class ResultViewController:UIViewController{
 extension ResultViewController: IndicatorInfoProvider,UIScrollViewDelegate,UITableViewDelegate,UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return results?.count ?? 0
+        if let results = self.results{
+            return results.count + 1
+        }else{
+            return 0
+        }
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "resultCell") as! ResultTableViewCell
+        cell.ymmLabel.isHidden = false
+        if results?.count ?? 0 > indexPath.row{
         if let hole = holes?[indexPath.row],let result = results?[indexPath.row]{
             if self.calcMode == 0 {
                 cell.nameLabel.text = hole.name
@@ -286,7 +373,17 @@ extension ResultViewController: IndicatorInfoProvider,UIScrollViewDelegate,UITab
                 cell.ypositionLabel.text = String(result.y)
             }
         }
-        return cell
+            return cell
+        }else{
+            cell.ypositionLabel.text = nil
+            if let railLength = self.railLength{
+                cell.nameLabel.text = "レール全長"
+                cell.xpositionLabel.text = "\(railLength)"
+                cell.ymmLabel.isHidden = true
+                
+            }
+            return cell
+        }
         
     }
     
@@ -313,13 +410,73 @@ extension ResultViewController: IndicatorInfoProvider,UIScrollViewDelegate,UITab
     func scrollViewDidZoom(_ scrollView: UIScrollView) {
         let scale = scrollView.zoomScale
         
-//        for label in labels {
-//            label.frame.size = CGSize(width: 100 / scale, height: 40 / scale)
-//            if let labelXPosition = self.labelXPosition{
-//                label.frame.origin = CGPoint(x: labelXPosition.x - 50 / scale, y: labelXPosition.y - 20 / scale)
-//            }
-//        }
+        for label in labels {
+            
+            label.frame.size = CGSize(width: 100 / scale, height: 40 / scale)
+            label.font = .systemFont(ofSize: 17 / scale )
+            if let labelXPosition = self.labelXPosition,label.tag == 0{
+                label.frame.origin = CGPoint(x: labelXPosition.x - 50 / scale, y: labelXPosition.y - 40 / scale)
+            }else if let labelYPosition = self.labelYPosition,label.tag == 1{
+                if labelYPosition.y == boxView.frame.maxY{
+                    label.frame.origin = CGPoint(x: labelYPosition.x, y: boxView.frame.maxY + 20 * (1 - 1 / scale))
+                }else{
+                    label.frame.origin = CGPoint(x: labelYPosition.x, y: labelYPosition.y - 20 / scale)
+                }
+            }
+        }
         
         print(scale)
     }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        print(scrollView.contentOffset)
+    }
+}
+
+extension ResultViewController:CoachMarksControllerDelegate,CoachMarksControllerDataSource{
+    func coachMarksController(_ coachMarksController: CoachMarksController, coachMarkViewsAt index: Int, madeFrom coachMark: CoachMark) -> (bodyView: (UIView & CoachMarkBodyView), arrowView: (UIView & CoachMarkArrowView)?) {
+        //吹き出しのビューを作成します
+        let coachViews = coachMarksController.helper.makeDefaultCoachViews(
+            withArrow: true,    //三角の矢印をつけるか
+            arrowOrientation: coachMark.arrowOrientation    //矢印の向き(吹き出しの位置)
+        )
+
+        //index(ステップ)によって表示内容を分岐させます
+        switch index {
+        case 0:    //tableView
+            coachViews.bodyView.hintLabel.text = "ここに計算結果が表示されています。タップするとその寸法が上図に表示されます。"
+            coachViews.bodyView.nextLabel.text = "OK!"
+        
+        case 1:    //boxView
+        coachViews.bodyView.hintLabel.text = "この図はBOXを表しています。配管をタップするとその寸法が表示されます。"
+            coachViews.bodyView.nextLabel.text = "👌"
+        
+        case 2:    //piyoSwitch
+            coachViews.bodyView.hintLabel.text = "このスイッチで設定を切り替えられます"
+            coachViews.bodyView.nextLabel.text = "了解"
+        
+        default:
+            break
+        
+        }
+        
+        //その他の設定が終わったら吹き出しを返します
+        return (bodyView: coachViews.bodyView, arrowView: coachViews.arrowView)
+    }
+    
+    func coachMarksController(_ coachMarksController: CoachMarksController, coachMarkAt index: Int) -> CoachMark {
+        //基本的にはチュートリアルの対象にしたいボタンやビューをチュートリアルの順にArrayに入れ、indexで指定する形がいいかなと思います(もっといい方法があったら教えてください)
+        let highlightViews: Array<UIView> = [self.tableView, boxView]
+        //(hogeLabelが最初、次にfugaButton,最後にpiyoSwitchという流れにしたい)
+
+        //チュートリアルで使うビューの中からindexで何ステップ目かを指定
+        return coachMarksController.helper.makeCoachMark(for: highlightViews[index])
+
+    }
+    
+    func numberOfCoachMarks(for coachMarksController: CoachMarksController) -> Int {
+        return 2
+    }
+    
+    
 }

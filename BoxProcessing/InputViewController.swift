@@ -13,7 +13,10 @@ class InputViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
+    @IBOutlet weak var resetButton: UILabel!
     @IBOutlet weak var calculateButton: UILabel!
+    @IBOutlet weak var calcButtonBottom: NSLayoutConstraint!
+    @IBOutlet weak var resetButtonBottom: NSLayoutConstraint!
     var holes : [Hole] = []
     var fields :[FieldValue] = []
     let staticCellStrings = ["BOX横幅","配管隙間","レール高さ","レール余長","管種","配管数"]
@@ -43,6 +46,10 @@ class InputViewController: UIViewController {
     
     var values :  [Any] = []
     
+    var offset: CGPoint?
+    var keyboardIsShown:Bool = false
+    
+    
     //結果
     var results :[Result] = []
     
@@ -55,15 +62,39 @@ class InputViewController: UIViewController {
         }
         setupTableView()
         calculateButton.cornerRadius = 10
-     
+        resetButton.cornerRadius = 10
         setupPicker()
         let calcGesture = UITapGestureRecognizer(target: self, action: #selector(tappedStartCalcButton))
         self.calculateButton.addGestureRecognizer(calcGesture)
         calculateButton.isUserInteractionEnabled = true
+        let resetGesture = UITapGestureRecognizer(target: self, action: #selector(reset))
+        self.resetButton.addGestureRecognizer(resetGesture)
+        resetButton.isUserInteractionEnabled = true
         
-        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+                
         
     }
+    
+    @objc func reset(){
+        let alert = UIAlertController(title: "値をリセットします", message: "よろしいですか？", preferredStyle: .alert)
+        let ok = UIAlertAction(title: "OK", style: .default) { action in
+            self.boxLength = nil
+            self.pipeInterval = nil
+            self.railHeight = nil
+            self.railEx = nil
+            self.pipeNumText = nil
+            self.holes = []
+            self.tableView.reloadData()
+        }
+        let cancel = UIAlertAction(title: "キャンセル", style: .cancel)
+        alert.addAction(cancel)
+        alert.addAction(ok)
+        self.present(alert, animated: true)
+       
+    }
+    
     private func loadUserSetting(){
         
     }
@@ -185,6 +216,7 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
 //                    staticCell.numberLabel.textColor = .placeholderText
 //                }
             case 5:
+                staticCell.inputTextField.tag = 5
                 if let pipeNumText = self.pipeNumText{
                     print(pipeNumText)
                     staticCell.numberLabel.text = String(pipeNumText)
@@ -202,6 +234,7 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
             return staticCell
         }else{
             let dynamicCell = tableView.dequeueReusableCell(withIdentifier: "dynamicCell", for: indexPath) as! DynamicTableViewCell
+            dynamicCell.delegate = self
             dynamicCell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
             
             let number = indexPath.row - staticCellStrings.count + 1
@@ -219,58 +252,6 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
         }
     }
     
-//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-////        let holeCell
-//        if indexPath.row < staticCellStrings.count{
-//            let staticCell = tableView.dequeueReusableCell(withIdentifier: "staticCell", for: indexPath) as! StaticTableViewCell
-//
-//
-//            let field = fields[indexPath.row]
-//            let value = values[indexPath.row]
-//            staticCell.nameLabel.text = field.fieldName
-//            if let number = value as? Float{
-//                //数値が入るfieldの場合
-//                if indexPath.row == 5{
-//                    staticCell.numberLabel.text = "\(Int(number))"
-//                    staticCell.mmLabel.isHidden = true
-//                }else{
-//                    staticCell.numberLabel.text = "\(number)"
-//                    staticCell.mmLabel.isHidden = false
-//                }
-//                staticCell.numberLabel.textColor = .label
-//            }else if let string = value as? String{
-//                //stringが入るfieldの場合
-//                staticCell.numberLabel.text = string
-//                staticCell.mmLabel.isHidden = true
-//                staticCell.numberLabel.textColor = .label
-//            }else{
-//                //どちらも入っていない場合
-//                staticCell.numberLabel.text = "未設定"
-//                staticCell.mmLabel.isHidden = true
-//                staticCell.numberLabel.textColor = .placeholderText
-//            }
-//            staticCell.inputTextField.delegate = self
-//            if indexPath.row == 4{
-//                staticCell.inputTextField.inputView = pipeTypePickerView
-//                staticCell.mmLabel.isHidden = true
-//            }
-//            return staticCell
-//        }else{
-//            let dynamicCell = tableView.dequeueReusableCell(withIdentifier: "dynamicCell", for: indexPath) as! DynamicTableViewCell
-//            dynamicCell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
-//
-//            let number = indexPath.row - staticCellStrings.count + 1
-//            dynamicCell.nameLabel.text  = "配管\(number)"
-//            dynamicCell.mmLabel.isHidden = true
-//            dynamicCell.numberLabel.textColor = .placeholderText
-//            dynamicCell.inputTextField.delegate = self
-//            dynamicCell.inputTextField.inputView = diameterPickerView
-//            return dynamicCell
-//        }
-//
-//
-//
-//    }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
 //        tableView.deselectRow(at: indexPath, animated: true)
@@ -292,14 +273,13 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
             }
         }
         
-        let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 45))
+        let toolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: 50))
         let spacelItem = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
         
         let nextItem = UIBarButtonItem(image: UIImage(systemName: "chevron.down"), style: .plain, target: self, action: #selector(tappedNextButton))
         let backItem = UIBarButtonItem(image: UIImage(systemName: "chevron.up"), style: .plain, target: self, action: #selector(tappedBackButton))
         let cancelItem = UIBarButtonItem(title: "キャンセル", style: .done, target: self, action: #selector(cancel))
         let doneItem = UIBarButtonItem(title: "決定", style: .done, target: self,action: #selector(save))
-       
         
         if indexPath.row < staticCellStrings.count{
             
@@ -608,77 +588,6 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
         
         
     }
-    @objc func savebefore(){
-        //決定ボタンタップ
-        guard let indexPath = self.selectedIndex else{return}
-        if indexPath.row < staticCellStrings.count{
-            //cellがstaticCellの場合
-        let editingField = fields[indexPath.row]
-        let cell = tableView.cellForRow(at:indexPath) as! StaticTableViewCell
-            cell.inputTextField.isHidden = true
-            cell.numberLabel.isHidden = false
-            guard let stringInt = cell.inputTextField.text else{
-            cell.numberLabel.text  = "未設定"
-            cell.numberLabel.textColor = .placeholderText
-            return
-        }
-        if let number = Float(stringInt){
-            //Intに変換できる時
-            editingField.value = number
-            values[indexPath.row] = number
-           
-            if indexPath.row == 5{
-                //配管数の場合
-                let int = Int(number)
-                cell.numberLabel.text = "\(int)"
-                cell.inputTextField.text = "\(int)"
-                self.changeNumberOfPipes(numberOfPipes: int)
-                cell.mmLabel.isHidden = true
-            }else{
-                cell.numberLabel.text = "\(number)"
-                cell.inputTextField.text = "\(number)"
-            }
-        }else if !(stringInt.isEmpty) && stringInt != "未設定"{
-            editingField.stringValue = stringInt
-            values[indexPath.row] = stringInt
-            cell.numberLabel.text = stringInt
-            cell.mmLabel.isHidden = true
-            if indexPath.row == 4{
-                self.changePipeType(pipeType: stringInt)
-            }
-        }else{
-            editingField.value = nil
-            editingField.stringValue = nil
-            cell.numberLabel.text  = "未設定"
-            cell.numberLabel.textColor = .placeholderText
-            cell.mmLabel.isHidden = true
-        }
-        }else{
-            //
-            let dynamicCell = tableView.cellForRow(at:indexPath) as! DynamicTableViewCell
-            if let string = dynamicCell.inputTextField.text,!(string.isEmpty){
-                let selectedRow = diameterPickerView.selectedRow(inComponent: 0)
-                 diameterPickerView.selectRow(selectedRow, inComponent: 0, animated: false)
-                if selectedPipeType == "厚鋼"{
-                    let diameter = self.GPipe[selectedRow]
-                    if holes.count > indexPath.row - staticCellStrings.count{
-                    self.holes[indexPath.row] = Hole(name: diameter)
-                    }
-                }else{
-                    let diameter = self.CPipe[selectedRow]
-                    if holes.count > indexPath.row - staticCellStrings.count{
-                    self.holes[indexPath.row] = Hole(name: diameter)
-                    }
-                }
-                
-            }else{
-                
-            }
-
-        }
-        tableView.deselectRow(at: indexPath, animated: true)
-        self.view.endEditing(true)
-    }
 
     
     func changeNumberOfPipes(numberOfPipes : Int){
@@ -739,6 +648,7 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
     
     @objc func tappedStartCalcButton(){
         var sum :Float = 0
+        self.save()
         guard let boxLength = self.boxLength else{
             let alert = UIAlertController(title: "エラー", message: "BOX横幅の値を入力してください", preferredStyle: .alert)
             let ok = UIAlertAction(title: "OK", style:.default)
@@ -800,7 +710,8 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
             self.railLength = sum + pipeInterval * Float(self.holes.count - 1) + 2 * railEx
             
             if edgeLength < 0{
-                HUD.flash(.labeledError(title: "エラー", subtitle: "BOX幅が足りません"))
+                HUD.flash(.labeledError(title: "エラー", subtitle: "BOX幅が足りません"),delay: 0.4)
+                return
             }
             
             for index in 0 ..< self.holes.count{
@@ -843,7 +754,49 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
         }
     }
     
+    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+        return  indexPath.row >= staticCellStrings.count
+    }
     
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        let itemToMove = holes.remove(at: sourceIndexPath.row)
+        holes.insert(itemToMove, at: destinationIndexPath.row)
+    }
+    
+    
+    
+    func textFieldDidChangeSelection(_ textField: UITextField) {
+
+        guard let password = textField.text else { return }
+        if textField.tag == 5{
+        if password.count > 2 {
+            textField.text = String(password.prefix(2))
+        }
+        }else{
+            if password.count > 4 {
+                textField.text = String(password.prefix(4))
+            }
+        }
+    }
+    
+    
+    
+}
+
+extension InputViewController:DynamicTableViewCellDelegate{
+    func tappedDeleteButton(cell:DynamicTableViewCell){
+        self.save()
+        self.selectedIndex = nil
+        guard let indexPath = self.tableView.indexPath(for: cell) else{return}
+        let index = indexPath.row - staticCellStrings.count
+        self.holes.remove(at: index)
+        tableView.deleteRows(at: [indexPath], with: .left)
+        pipeNumText = self.holes.count
+        if let pipeNumCell = tableView.cellForRow(at: IndexPath(row: 5, section: 0)) as? StaticTableViewCell{
+        pipeNumCell.inputTextField.text = "\(self.holes.count)"
+        pipeNumCell.numberLabel.text = "\(self.holes.count)"
+        }
+    }
 }
 
 
@@ -926,17 +879,33 @@ extension InputViewController :UIPickerViewDelegate,UIPickerViewDataSource{
             }
         }
     }
-//    func textFieldDidChangeSelection(_ textField: UITextField) {
-//        guard let selectedIndex = self.selectedIndex else{return}
-//        let cell = tableView.cellForRow(at: selectedIndex) as! StaticTableViewCell
-//        cell.numberLabel.text = textField.text
-//        cell.numberLabel.textColor = .label
-//        if selectedIndex.row == 4 || selectedIndex.row == 5{
-//            cell.mmLabel.isHidden = true
-//        }else{
-//            cell.mmLabel.isHidden = false
-//        }
-//    }
+    @objc func keyboardWillShow(_ notification: NSNotification) {
+      
+           offset = tableView.contentOffset
+           if let keyboardHeight = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue.height {
+               tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardHeight, right: 0)
+               resetButtonBottom.constant = keyboardHeight - 60
+               calcButtonBottom.constant = keyboardHeight - 60
+               UIView.animate(withDuration: 0.2, animations: {
+                   self.view.layoutIfNeeded()
+               })
+           }
+       }
+
+       @objc func keyboardWillHide(_ notification: NSNotification) {
+         
+
+           self.resetButtonBottom.constant = 20
+           self.calcButtonBottom.constant = 20
+           UIView.animate(withDuration: 0.2, animations: {
+               if let unwrappedOffset = self.offset {
+                   self.tableView.contentOffset = unwrappedOffset
+               }
+               self.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+           })
+           
+       }
+           
 }
 
 
@@ -947,4 +916,3 @@ extension InputViewController: IndicatorInfoProvider{
         return IndicatorInfo(title: "数値入力") // ButtonBarItemに表示される名前になります
     }
 }
-
