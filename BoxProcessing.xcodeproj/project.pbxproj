@@ -36,6 +36,16 @@
 		3EB5742D292D07A300A589EF /* ResultTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EB5742C292D07A300A589EF /* ResultTableViewCell.swift */; };
 		3EB5742F292D0C2F00A589EF /* ResultTableViewHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3EB5742E292D0C2F00A589EF /* ResultTableViewHeader.xib */; };
 		3EB57431292D0EC900A589EF /* ResultTableViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EB57430292D0EC900A589EF /* ResultTableViewHeader.swift */; };
+		3EBC69A62953225200E0C098 /* JobListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EBC69A42953225200E0C098 /* JobListTableViewCell.swift */; };
+		3EBC69A72953225200E0C098 /* JobListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3EBC69A52953225200E0C098 /* JobListTableViewCell.xib */; };
+		3EFA3B802953A0B200DBC9E4 /* JobListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EFA3B7F2953A0B200DBC9E4 /* JobListTableViewController.swift */; };
+		3EFA3B8529579CAF00DBC9E4 /* JobDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EFA3B8329579CAF00DBC9E4 /* JobDetailViewController.swift */; };
+		3EFA3B882959D82600DBC9E4 /* JobDetailView.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3EFA3B872959D82600DBC9E4 /* JobDetailView.storyboard */; };
+		3EFA3B8B2959DA6700DBC9E4 /* JobDetailCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EFA3B892959DA6700DBC9E4 /* JobDetailCollectionViewCell.swift */; };
+		3EFA3B8C2959DA6700DBC9E4 /* JobDetailCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3EFA3B8A2959DA6700DBC9E4 /* JobDetailCollectionViewCell.xib */; };
+		3EFA3B8E295AF3B400DBC9E4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3EFA3B8D295AF3B300DBC9E4 /* GoogleService-Info.plist */; };
+		3EFA3B91295AFD5800DBC9E4 /* Job.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EFA3B90295AFD5800DBC9E4 /* Job.swift */; };
+		3EFA3B93295C10F400DBC9E4 /* JobEditView.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3EFA3B92295C10F300DBC9E4 /* JobEditView.storyboard */; };
 		79A9D6ABA737B2B0DC5B5F4D /* Pods_BoxProcessing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC5B49BEA9D46BCDA46269A3 /* Pods_BoxProcessing.framework */; };
 		8EAD2D45C9A745F353A635A0 /* Pods_BoxProcessingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E0B5FF7D975532CD27B741E /* Pods_BoxProcessingTests.framework */; };
 		A9A838F0307E788F2CFBC652 /* Pods_BoxProcessing_BoxProcessingUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D760DE3ABB7ACBB95828F053 /* Pods_BoxProcessing_BoxProcessingUITests.framework */; };
@@ -95,6 +105,16 @@
 		3EB5742C292D07A300A589EF /* ResultTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultTableViewCell.swift; sourceTree = "<group>"; };
 		3EB5742E292D0C2F00A589EF /* ResultTableViewHeader.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ResultTableViewHeader.xib; sourceTree = "<group>"; };
 		3EB57430292D0EC900A589EF /* ResultTableViewHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultTableViewHeader.swift; sourceTree = "<group>"; };
+		3EBC69A42953225200E0C098 /* JobListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobListTableViewCell.swift; sourceTree = "<group>"; };
+		3EBC69A52953225200E0C098 /* JobListTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = JobListTableViewCell.xib; sourceTree = "<group>"; };
+		3EFA3B7F2953A0B200DBC9E4 /* JobListTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobListTableViewController.swift; sourceTree = "<group>"; };
+		3EFA3B8329579CAF00DBC9E4 /* JobDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobDetailViewController.swift; sourceTree = "<group>"; };
+		3EFA3B872959D82600DBC9E4 /* JobDetailView.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = JobDetailView.storyboard; sourceTree = "<group>"; };
+		3EFA3B892959DA6700DBC9E4 /* JobDetailCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JobDetailCollectionViewCell.swift; sourceTree = "<group>"; };
+		3EFA3B8A2959DA6700DBC9E4 /* JobDetailCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = JobDetailCollectionViewCell.xib; sourceTree = "<group>"; };
+		3EFA3B8D295AF3B300DBC9E4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		3EFA3B90295AFD5800DBC9E4 /* Job.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Job.swift; sourceTree = "<group>"; };
+		3EFA3B92295C10F300DBC9E4 /* JobEditView.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = JobEditView.storyboard; sourceTree = "<group>"; };
 		584CD61B0379D41F185018D9 /* Pods-BoxProcessing.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BoxProcessing.debug.xcconfig"; path = "Target Support Files/Pods-BoxProcessing/Pods-BoxProcessing.debug.xcconfig"; sourceTree = "<group>"; };
 		5E0B5FF7D975532CD27B741E /* Pods_BoxProcessingTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BoxProcessingTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A1BAC4CC83A92D7020DB7FAA /* Pods-BoxProcessing.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BoxProcessing.release.xcconfig"; path = "Target Support Files/Pods-BoxProcessing/Pods-BoxProcessing.release.xcconfig"; sourceTree = "<group>"; };
@@ -156,27 +176,19 @@
 		3E6289A828CC6124003E20F6 /* BoxProcessing */ = {
 			isa = PBXGroup;
 			children = (
+				3EFA3B8229579C5800DBC9E4 /* JobListView */,
+				3EFA3B8129579C0F00DBC9E4 /* CalcView */,
 				3E9A25C62933FA4600FEED55 /* Cells */,
+				3EFA3B8F295AFCF700DBC9E4 /* Models */,
 				3E6289A928CC6124003E20F6 /* AppDelegate.swift */,
-				3E95919928CC78CF00AE98AB /* ParentViewController.swift */,
 				3E6289AB28CC6124003E20F6 /* SceneDelegate.swift */,
-				3E6289AD28CC6124003E20F6 /* InputViewController.swift */,
+				3EFA3B8D295AF3B300DBC9E4 /* GoogleService-Info.plist */,
 				3E6289AF28CC6124003E20F6 /* Main.storyboard */,
 				3E6289B228CC6127003E20F6 /* Assets.xcassets */,
 				3E6289B428CC6127003E20F6 /* LaunchScreen.storyboard */,
 				3E6289B728CC6127003E20F6 /* Info.plist */,
 				3E95919B28CC7AA900AE98AB /* Utility.swift */,
-				3E95919D28CC7B3B00AE98AB /* ResultViewController.swift */,
-				3E95919F28CC80F900AE98AB /*  Hole.swift */,
-				3EAB1E5028CEED7A00E9BEBF /* FiledValue.swift */,
-				3E4B234F28E01827002D52DA /* SettingViewController.swift */,
 				3E4B235128E0185F002D52DA /* TutorialViewController.swift */,
-				3EB5742E292D0C2F00A589EF /* ResultTableViewHeader.xib */,
-				3EB57430292D0EC900A589EF /* ResultTableViewHeader.swift */,
-				3E9A25C72934072900FEED55 /* PipeSettingViewController.swift */,
-				3E9A25C92934075700FEED55 /* PipeSettingView.storyboard */,
-				3E9A25CB2934C12800FEED55 /* RailLengthHeaderView.swift */,
-				3E9A25CD2934C16B00FEED55 /* RailLengthHeaderView.xib */,
 			);
 			path = BoxProcessing;
 			sourceTree = "<group>";
@@ -208,8 +220,50 @@
 				3EB5742C292D07A300A589EF /* ResultTableViewCell.swift */,
 				3E95919528CC75B000AE98AB /* StaticTableViewCell.swift */,
 				3E9A25CF29363A9300FEED55 /* SettingTableViewCell.swift */,
+				3EBC69A42953225200E0C098 /* JobListTableViewCell.swift */,
+				3EBC69A52953225200E0C098 /* JobListTableViewCell.xib */,
+				3EFA3B892959DA6700DBC9E4 /* JobDetailCollectionViewCell.swift */,
+				3EFA3B8A2959DA6700DBC9E4 /* JobDetailCollectionViewCell.xib */,
 			);
 			path = Cells;
+			sourceTree = "<group>";
+		};
+		3EFA3B8129579C0F00DBC9E4 /* CalcView */ = {
+			isa = PBXGroup;
+			children = (
+				3E6289AD28CC6124003E20F6 /* InputViewController.swift */,
+				3E95919928CC78CF00AE98AB /* ParentViewController.swift */,
+				3EB5742E292D0C2F00A589EF /* ResultTableViewHeader.xib */,
+				3EB57430292D0EC900A589EF /* ResultTableViewHeader.swift */,
+				3E9A25C72934072900FEED55 /* PipeSettingViewController.swift */,
+				3E9A25C92934075700FEED55 /* PipeSettingView.storyboard */,
+				3E9A25CB2934C12800FEED55 /* RailLengthHeaderView.swift */,
+				3E9A25CD2934C16B00FEED55 /* RailLengthHeaderView.xib */,
+				3E4B234F28E01827002D52DA /* SettingViewController.swift */,
+				3E95919D28CC7B3B00AE98AB /* ResultViewController.swift */,
+			);
+			path = CalcView;
+			sourceTree = "<group>";
+		};
+		3EFA3B8229579C5800DBC9E4 /* JobListView */ = {
+			isa = PBXGroup;
+			children = (
+				3EFA3B7F2953A0B200DBC9E4 /* JobListTableViewController.swift */,
+				3EFA3B8329579CAF00DBC9E4 /* JobDetailViewController.swift */,
+				3EFA3B872959D82600DBC9E4 /* JobDetailView.storyboard */,
+				3EFA3B92295C10F300DBC9E4 /* JobEditView.storyboard */,
+			);
+			path = JobListView;
+			sourceTree = "<group>";
+		};
+		3EFA3B8F295AFCF700DBC9E4 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				3E95919F28CC80F900AE98AB /*  Hole.swift */,
+				3EAB1E5028CEED7A00E9BEBF /* FiledValue.swift */,
+				3EFA3B90295AFD5800DBC9E4 /* Job.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		A5AC03E530E62D24B711974F /* Frameworks */ = {
@@ -344,13 +398,18 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3EFA3B8E295AF3B400DBC9E4 /* GoogleService-Info.plist in Resources */,
 				3E9A25CA2934075700FEED55 /* PipeSettingView.storyboard in Resources */,
 				3E6289B628CC6127003E20F6 /* LaunchScreen.storyboard in Resources */,
 				3EB5742F292D0C2F00A589EF /* ResultTableViewHeader.xib in Resources */,
+				3EBC69A72953225200E0C098 /* JobListTableViewCell.xib in Resources */,
 				3E6289B328CC6127003E20F6 /* Assets.xcassets in Resources */,
+				3EFA3B8C2959DA6700DBC9E4 /* JobDetailCollectionViewCell.xib in Resources */,
+				3EFA3B93295C10F400DBC9E4 /* JobEditView.storyboard in Resources */,
 				3E9A25CE2934C16B00FEED55 /* RailLengthHeaderView.xib in Resources */,
 				3EB5742B292CF4B300A589EF /* ResultTableViewCell.xib in Resources */,
 				3E8C7F6128CD84B8006A3000 /* DynamicTableViewCell.xib in Resources */,
+				3EFA3B882959D82600DBC9E4 /* JobDetailView.storyboard in Resources */,
 				3E6289B128CC6124003E20F6 /* Main.storyboard in Resources */,
 				3E95919828CC75B000AE98AB /* StaticTableViewCell.xib in Resources */,
 			);
@@ -485,7 +544,10 @@
 				3E4B235028E01827002D52DA /* SettingViewController.swift in Sources */,
 				3E9A25CC2934C12800FEED55 /* RailLengthHeaderView.swift in Sources */,
 				3E95919A28CC78CF00AE98AB /* ParentViewController.swift in Sources */,
+				3EFA3B8B2959DA6700DBC9E4 /* JobDetailCollectionViewCell.swift in Sources */,
 				3E95919E28CC7B3B00AE98AB /* ResultViewController.swift in Sources */,
+				3EFA3B91295AFD5800DBC9E4 /* Job.swift in Sources */,
+				3EFA3B802953A0B200DBC9E4 /* JobListTableViewController.swift in Sources */,
 				3E8C7F6028CD84B8006A3000 /* DynamicTableViewCell.swift in Sources */,
 				3EAB1E5128CEED7A00E9BEBF /* FiledValue.swift in Sources */,
 				3E9A25C82934072900FEED55 /* PipeSettingViewController.swift in Sources */,
@@ -495,6 +557,8 @@
 				3E6289AC28CC6124003E20F6 /* SceneDelegate.swift in Sources */,
 				3EB5742D292D07A300A589EF /* ResultTableViewCell.swift in Sources */,
 				3E9591A028CC80F900AE98AB /*  Hole.swift in Sources */,
+				3EBC69A62953225200E0C098 /* JobListTableViewCell.swift in Sources */,
+				3EFA3B8529579CAF00DBC9E4 /* JobDetailViewController.swift in Sources */,
 				3E4B235228E0185F002D52DA /* TutorialViewController.swift in Sources */,
 				3E95919728CC75B000AE98AB /* StaticTableViewCell.swift in Sources */,
 			);
@@ -678,6 +742,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BoxProcessing/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "BOX加工";
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -709,6 +774,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = BoxProcessing/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "BOX加工";
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;

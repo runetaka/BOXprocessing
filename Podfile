@@ -10,7 +10,11 @@ target 'BoxProcessing' do
   pod "youtube-ios-player-helper", "~> 1.0.4"
   pod "Siren"
   pod 'Instructions', '~> 2.2.0'
-
+  pod 'Google-Mobile-Ads-SDK'
+  pod 'FirebaseAnalytics'
+  pod 'FirebaseAuth'
+  pod 'FirebaseFirestore'
+  
   # Pods for BoxProcessing
 
   target 'BoxProcessingTests' do

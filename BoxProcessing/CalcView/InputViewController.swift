@@ -8,6 +8,7 @@
 import UIKit
 import XLPagerTabStrip
 import PKHUD
+import GoogleMobileAds
 // デフォルトで継承している UIViewController を ButtonBarPagerTabStripViewController に書き換える
 class InputViewController: UIViewController {
     
@@ -24,9 +25,9 @@ class InputViewController: UIViewController {
     let mode = ["端から配管中心までの距離を計算","配管の中心の間隔を計算"]
     let pipeType = ["厚鋼","薄鋼"]
     let GPipe = ["G16","G22", "G28" ,"G36","G42","G54","G70","G82","G92","G104"]
-    let CPipe = ["C19","C25","C31","C39","C51","C63","C76"]
+    let CPipe = ["C19","C25","C31","C39","C51","C63","C75"]
     let holeList =
-    ["G16":21,"G22":27, "G28":34 ,"G36":42,"G42":48,"G54":60,"G70":75,"G82":88,"G92":100,"G104":113,"C19":19,"C25":25,"C31":31,"C39":39,"C51":51,"C63":63,"C76":76]        
+    ["G16":21,"G22":27, "G28":34 ,"G36":42,"G42":48,"G54":60,"G70":75,"G82":88,"G92":100,"G104":113,"C19":19,"C25":25,"C31":31,"C39":39,"C51":51,"C63":63,"C75":76]        
     var numberOfPipes : [Int] = Array(1..<20)
     
     var modePickerView = UIPickerView()
@@ -52,6 +53,9 @@ class InputViewController: UIViewController {
     //結果
     var results :[Result] = []
     
+    //広告
+    var interstitial : GADInterstitialAd?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         values = [boxLength,pipeInterval,railHeight,railEx,selectedPipeType,pipeNumText]
@@ -63,6 +67,7 @@ class InputViewController: UIViewController {
         calculateButton.cornerRadius = 10
         resetButton.cornerRadius = 10
         setupPicker()
+        loadGAD()
         let calcGesture = UITapGestureRecognizer(target: self, action: #selector(tappedStartCalcButton))
         self.calculateButton.addGestureRecognizer(calcGesture)
         calculateButton.isUserInteractionEnabled = true
@@ -75,7 +80,21 @@ class InputViewController: UIViewController {
                 
         
     }
-    
+    func loadGAD(){
+        let request = GADRequest()
+        GADInterstitialAd.load(withAdUnitID:"ca-app-pub-3940256099942544/4411468910",
+                               request: request,
+                               completionHandler: { [self] ad, error in
+            if let error = error {
+                print("Failed to load interstitial ad with error: \(error.localizedDescription)")
+                return
+            }
+            interstitial = ad
+            ad?.fullScreenContentDelegate = self
+        }
+        )
+    }
+
     @objc func reset(){
         let alert = UIAlertController(title: "値をリセットします", message: "よろしいですか？", preferredStyle: .alert)
         let ok = UIAlertAction(title: "OK", style: .default) { action in
@@ -723,7 +742,10 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
             }
             
             dg.notify(queue: .main){
-               
+               //ここまできたらエラーがないので広告表示
+                if let interstitial = self.interstitial{
+                    interstitial.present(fromRootViewController: self)
+                }
                 if let parent = self.parent as? PagerTabStripViewController{
                     parent.moveToViewController(at: 1)
                     let vc = parent.viewControllers[1] as! ResultViewController
@@ -930,5 +952,12 @@ extension InputViewController :UIPickerViewDelegate,UIPickerViewDataSource{
 extension InputViewController: IndicatorInfoProvider{
     func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
         return IndicatorInfo(title: "数値入力") // ButtonBarItemに表示される名前になります
+    }
+}
+
+
+extension InputViewController:GADFullScreenContentDelegate{
+    func adDidDismissFullScreenContent(_ ad: GADFullScreenPresentingAd) {
+        self.loadGAD()
     }
 }
