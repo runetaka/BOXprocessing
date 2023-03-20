@@ -19,15 +19,21 @@ class InputViewController: UIViewController {
     @IBOutlet weak var calcButtonBottom: NSLayoutConstraint!
     @IBOutlet weak var resetButtonBottom: NSLayoutConstraint!
     var holes : [Hole] = []
+    var bolts : [UBolts] = []
     var fields :[FieldValue] = []
-    let staticCellStrings = ["BOX横幅","配管隙間","レール高さ","レール余長","管種","配管数"]
+    let staticCellStrings = ["配管隙間","アングル余長","管種","配管数"]
     
     let mode = ["端から配管中心までの距離を計算","配管の中心の間隔を計算"]
-    let pipeType = ["厚鋼","薄鋼"]
-    let GPipe = ["G16","G22", "G28" ,"G36","G42","G54","G70","G82","G92","G104"]
-    let CPipe = ["C19","C25","C31","C39","C51","C63","C75"]
+    let pipeType = ["SGP","VP"]
+    let SGP = ["6A","10A","15A","20A","25A","32A","40A","50A","65A","80A","90A","100A","125A","150A","175A","200A"]
+    let HIVP = ["13A","16A","20A","25A"]
+    var uBoltsDiameter: Float = 12  //Uボルト穴径
     let holeList =
-    ["G16":21,"G22":27, "G28":34 ,"G36":42,"G42":48,"G54":60,"G70":75,"G82":88,"G92":100,"G104":113,"C19":19,"C25":25,"C31":31,"C39":39,"C51":51,"C63":63,"C75":76]        
+    ["G16":21,"G22":27, "G28":34 ,"G36":42,"G42":48,"G54":60,"G70":75,"G82":88,"G92":100,"G104":113,"C19":19,"C25":25,"C31":31,"C39":39,"C51":51,"C63":63,"C75":76]
+    var Plist : [String:Float] = ["10A":28,"15A":34,"20A":40,"25A":46,"32A":56,"40A":62,"50A":74,"65A":88,"80A":101,"90A":115,"100A":126,"125A":152,"150A":180]
+    let VPDiameters = ["13A":18,"16A":22,"20A":26,"25A":32]
+    let SGPDiameters :[String:Float] = ["10A":17.3,"15A":21.7,"20A":27.2,"25A":34,"32A":42.7,"40A":48.6,"50A":60.5,"65A":76.3,"80A":89.1,"90A":101.6,"100A":114.3,"125A":139.8,"150A":165.2,"175A":190.7,"200A":216.3]
+
     var numberOfPipes : [Int] = Array(1..<20)
     
     var modePickerView = UIPickerView()
@@ -37,12 +43,10 @@ class InputViewController: UIViewController {
     
     var selectedIndex :IndexPath?
     
-    var boxLength : Float? // 全長
     var pipeInterval :Float? //配管間隔
-    var railHeight :Float?//レール高さ
     var railEx :Float? //レール余長
     var railLength : Float = 0.0 //レール全長
-    var selectedPipeType:String = "厚鋼"
+    var selectedPipeType:String = "SGP"
     var pipeNumText:Int?
     
     var values :  [Any] = []
@@ -58,7 +62,7 @@ class InputViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        values = [boxLength,pipeInterval,railHeight,railEx,selectedPipeType,pipeNumText]
+        values = [pipeInterval,railEx,selectedPipeType,pipeNumText]
         for string in staticCellStrings{
             let fieldValue = FieldValue(fieldName: string)
             fields.append(fieldValue)
@@ -98,12 +102,10 @@ class InputViewController: UIViewController {
     @objc func reset(){
         let alert = UIAlertController(title: "値をリセットします", message: "よろしいですか？", preferredStyle: .alert)
         let ok = UIAlertAction(title: "OK", style: .default) { action in
-            self.boxLength = nil
             self.pipeInterval = nil
-            self.railHeight = nil
             self.railEx = nil
             self.pipeNumText = nil
-            self.holes = []
+            self.bolts = []
             self.tableView.reloadData()
         }
         let cancel = UIAlertAction(title: "キャンセル", style: .cancel)
@@ -152,7 +154,7 @@ class InputViewController: UIViewController {
 
 extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return  self.holes.count + fields.count
+        return  self.bolts.count + fields.count
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath.row < staticCellStrings.count{
@@ -171,20 +173,8 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
             staticCell.nameLabel.text = field.fieldName
             
             switch(indexPath.row){
+            
             case 0:
-                staticCell.inputTextField.inputView = nil
-                if let boxLength = self.boxLength{
-                    print(boxLength)
-                    staticCell.numberLabel.text = String(boxLength)
-                    staticCell.inputTextField.text = String(boxLength)
-                    staticCell.mmLabel.isHidden = false
-                    staticCell.numberLabel.textColor = .label
-                }else{
-                    staticCell.numberLabel.text = "未設定"
-                    staticCell.mmLabel.isHidden = true
-                    staticCell.numberLabel.textColor = .placeholderText
-                }
-            case 1:
                 staticCell.inputTextField.inputView = nil
                 if let pipeInterval = self.pipeInterval{
                     print(pipeInterval)
@@ -197,22 +187,8 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
                     staticCell.mmLabel.isHidden = true
                     staticCell.numberLabel.textColor = .placeholderText
                 }
-            case 2:
-                staticCell.inputTextField.inputView = nil
-
-                if let railHeight = self.railHeight{
-                    print(railHeight)
-                    staticCell.numberLabel.text = String(railHeight)
-                    staticCell.inputTextField.text = String(railHeight)
-                    staticCell.mmLabel.isHidden = false
-                    staticCell.numberLabel.textColor = .label
-                }else{
-                    staticCell.numberLabel.text = "未設定"
-                    staticCell.mmLabel.isHidden = true
-                    staticCell.numberLabel.textColor = .placeholderText
-                }
-                
-            case 3:
+            
+            case 1:
                 staticCell.inputTextField.inputView = nil
 
                 if let railEx = self.railEx{
@@ -226,7 +202,7 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
                     staticCell.mmLabel.isHidden = true
                     staticCell.numberLabel.textColor = .placeholderText
                 }
-            case 4:
+            case 2:
                 staticCell.inputTextField.inputView = pipeTypePickerView
 //                if let selectedPipeType = self.selectedPipeType{
                     print(selectedPipeType)
@@ -239,7 +215,7 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
 //                    staticCell.mmLabel.isHidden = true
 //                    staticCell.numberLabel.textColor = .placeholderText
 //                }
-            case 5:
+            case 3:
                 staticCell.inputTextField.inputView = nil
                 staticCell.inputTextField.tag = 5
                 staticCell.inputTextField.keyboardType = .numberPad
@@ -269,10 +245,10 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
             dynamicCell.numberLabel.textColor = .label
             dynamicCell.inputTextField.delegate = self
             dynamicCell.inputTextField.inputView = diameterPickerView
-            if selectedPipeType == "厚鋼"{
-                dynamicCell.numberLabel.text = "G16"
+            if selectedPipeType == "SGP"{
+                dynamicCell.numberLabel.text = "6A"
             }else{
-                dynamicCell.numberLabel.text = "C19"
+                dynamicCell.numberLabel.text = "13A"
             }
             return dynamicCell
         }
@@ -289,7 +265,7 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
             if let beforeCell =  tableView.cellForRow(at: beforeIndex) as? StaticTableViewCell{
                 beforeCell.inputTextField.isHidden = true
                 beforeCell.numberLabel.isHidden = false
-                if beforeIndex.row < 4 && beforeCell.numberLabel.text != "未設定"{
+                if beforeIndex.row < 3 && beforeCell.numberLabel.text != "未設定"{
                     beforeCell.mmLabel.isHidden = false
                 }
                 
@@ -370,8 +346,8 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
             let dynamicCell = tableView.cellForRow(at: indexPath) as! DynamicTableViewCell
             dynamicCell.inputTextField.inputAccessoryView = toolbar
             let dynamicIndex = indexPath.row - self.staticCellStrings.count
-            let hole = self.holes[dynamicIndex].name
-            if let selectedRow = GPipe.firstIndex(where: {$0 == hole}){
+            let hole = self.bolts[dynamicIndex].name
+            if let selectedRow = SGP.firstIndex(where: {$0 == hole}){
                 print(selectedRow)
                 self.diameterPickerView.selectRow(selectedRow, inComponent: 0, animated: false)
             }
@@ -464,25 +440,8 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
             
             switch(indexPath.row){
                 //                ["BOX横幅","配管隙間","レール高さ","レール全長","管種","配管数"]
+            
             case 0:
-                guard let string = cell.inputTextField.text,!(string.isEmpty) else{
-                    cell.numberLabel.text  = "未設定"
-                    cell.numberLabel.textColor = .placeholderText
-                    cell.mmLabel.isHidden = true
-                    boxLength = nil
-                    tableView.deselectRow(at: indexPath, animated: true)
-                    self.view.endEditing(true)
-                    return
-                }
-                if let length = Float(string){
-                    self.boxLength = length
-                    cell.numberLabel.text = "\(length)"
-                    cell.inputTextField.text = "\(length)"
-                    cell.mmLabel.isHidden = false
-                    cell.numberLabel.textColor = .label
-
-                }
-            case 1:
                 guard let string = cell.inputTextField.text,!(string.isEmpty) else{
                     cell.numberLabel.text  = "未設定"
                     cell.numberLabel.textColor = .placeholderText
@@ -500,24 +459,8 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
                     cell.numberLabel.textColor = .label
 
                 }
-            case 2:
-                guard let string = cell.inputTextField.text,!(string.isEmpty) else{
-                    cell.numberLabel.text  = "未設定"
-                    cell.numberLabel.textColor = .placeholderText
-                    cell.mmLabel.isHidden = true
-                    railHeight = nil
-                    tableView.deselectRow(at: indexPath, animated: true)
-                    self.view.endEditing(true)
-                    return
-                }
-                if let length = Float(string){
-                    self.railHeight = length
-                    cell.numberLabel.text = "\(length)"
-                    cell.inputTextField.text = "\(length)"
-                    cell.mmLabel.isHidden = false
-                    cell.numberLabel.textColor = .label
-                }
-            case 3:
+           
+            case 1:
                 guard let string = cell.inputTextField.text,!(string.isEmpty) else{
                     cell.numberLabel.text  = "未設定"
                     cell.numberLabel.textColor = .placeholderText
@@ -535,7 +478,7 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
                     cell.mmLabel.isHidden = false
                     cell.numberLabel.textColor = .label
                 }
-            case 4:
+            case 2:
                 let row = self.pipeTypePickerView.selectedRow(inComponent: 0)
                 self.pipeTypePickerView.selectRow(row, inComponent: 0, animated: false)
                 let string = pipeType[row]
@@ -545,7 +488,7 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
                 cell.mmLabel.isHidden = true
                 self.selectedPipeType = string
                 cell.numberLabel.textColor = .label
-            case 5:
+            case 3:
                 guard let string = cell.inputTextField.text,!(string.isEmpty) else{
                     cell.numberLabel.text  = "未設定"
                     cell.numberLabel.textColor = .placeholderText
@@ -572,21 +515,21 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
             dynamicCell.numberLabel.isHidden = false
             let selectedRow = diameterPickerView.selectedRow(inComponent: 0)
             diameterPickerView.selectRow(selectedRow, inComponent: 0, animated: false)
-            if selectedPipeType == "厚鋼"{
-                let diameter = self.GPipe[selectedRow]
+            if selectedPipeType == "SGP"{
+                let diameter = self.SGP[selectedRow]
                 dynamicCell.numberLabel.text = diameter
                 dynamicCell.numberLabel.textColor = .label
                 let dynamicIndex = indexPath.row - staticCellStrings.count
-                if holes.count > dynamicIndex{
-                    self.holes[dynamicIndex] = Hole(name: diameter)
+                if bolts.count > dynamicIndex{
+                    self.bolts[dynamicIndex] = UBolts(name: diameter)
                 }
             }else{
-                let diameter = self.CPipe[selectedRow]
+                let diameter = self.HIVP[selectedRow]
                 dynamicCell.numberLabel.text = diameter
                 dynamicCell.numberLabel.textColor = .label
                 let dynamicIndex = indexPath.row - staticCellStrings.count
-                if holes.count > dynamicIndex{
-                    self.holes[dynamicIndex] = Hole(name: diameter)
+                if bolts.count > dynamicIndex{
+                    self.bolts[dynamicIndex] = UBolts(name: diameter)
                 }
             }
         }
@@ -598,43 +541,43 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
 
     
     func changeNumberOfPipes(numberOfPipes : Int){
-        if holes.count < numberOfPipes{
+        if bolts.count < numberOfPipes{
             //追加するとき
-        for pipe in holes.count ..< numberOfPipes{
-            if selectedPipeType == "厚鋼"{
-                let hole = Hole(name: "G16")
-                self.holes.append(hole)
+        for pipe in bolts.count ..< numberOfPipes{
+            if selectedPipeType == "SGP"{
+                let hole = UBolts(name: "6A")
+                self.bolts.append(hole)
             }else{
-                let hole = Hole(name: "C19")
-                self.holes.append(hole)
+                let hole = UBolts(name: "13A")
+                self.bolts.append(hole)
             }
         }
             tableView.reloadData()
         }else{
             //減る時
-            let diff = holes.count - numberOfPipes
-            holes.removeLast(diff)
+            let diff = bolts.count - numberOfPipes
+            bolts.removeLast(diff)
             tableView.reloadData()
         }
     }
     
     func changePipeType(pipeType:String){
-        if pipeType == "厚鋼" && selectedPipeType != "厚鋼"{
-            for (index,hole) in holes.enumerated(){
+        if pipeType == "SGP" && selectedPipeType != "SGP"{
+            for (index,hole) in bolts.enumerated(){
                 let dynamicIndex = index + staticCellStrings.count
                 if let dynamicCell = tableView.cellForRow(at:IndexPath(row: dynamicIndex, section: 0)) as? DynamicTableViewCell{
-                    dynamicCell.numberLabel.text = "G16"
+                    dynamicCell.numberLabel.text = "6A"
                 }
-                hole.name = "G16"
+                hole.name = "6A"
                 hole.diameter = 16
                 
             }
         }else if pipeType == "薄鋼" && selectedPipeType != "薄鋼"{
-            for (index,hole) in holes.enumerated(){
+            for (index,hole) in bolts.enumerated(){
                 let dynamicIndex = index + staticCellStrings.count
                 let dynamicCell = tableView.cellForRow(at:IndexPath(row: dynamicIndex, section: 0)) as! DynamicTableViewCell
-                dynamicCell.inputTextField.text = "C19"
-                hole.name = "C19"
+                dynamicCell.inputTextField.text = "13A"
+                hole.name = "13A"
                 hole.diameter = 19
             }
         }
@@ -656,14 +599,6 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
     @objc func tappedStartCalcButton(){
         var sum :Float = 0
         self.save()
-        guard let boxLength = self.boxLength else{
-            let alert = UIAlertController(title: "エラー", message: "BOX横幅の値を入力してください", preferredStyle: .alert)
-            let ok = UIAlertAction(title: "OK", style:.default)
-            alert.addAction(ok)
-            self.present(alert, animated: true)
-            return
-            
-        }
         guard let pipeInterval = self.pipeInterval else{
             
             let alert = UIAlertController(title: "エラー", message: "配管隙間の値を入力してください", preferredStyle: .alert)
@@ -672,40 +607,56 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
             self.present(alert, animated: true)
             return
         }
-        if holes.count == 0{
+        if bolts.count == 0{
             let alert = UIAlertController(title: "エラー", message: "配管がありません", preferredStyle: .alert)
             let ok = UIAlertAction(title: "OK", style:.default)
             alert.addAction(ok)
             self.present(alert, animated: true)
             return
         }
-        let railHeight = self.railHeight  ?? 0.0
         let railEx = self.railEx ?? 0.0
         results = []
         var userSetting : [String:Float]?
-        
-        if let setting = UserDefaults.standard.dictionary(forKey: "pipe") as? [String:Float]{
+        if let setting = UserDefaults.standard.dictionary(forKey: selectedPipeType) as? [String:Float]{
             userSetting = setting
+            self.uBoltsDiameter = setting["uBolts"] ?? 12
         }
         
+        
         let dispatchGroup = DispatchGroup()
-        for hole in holes{
+        for bolt in bolts{
             dispatchGroup.enter()
             if let userSetting = userSetting {
                 //ユーザー設定がある場合
-                if let diameter = userSetting[hole.name]{
+                if let diameter = userSetting[bolt.name]{
                     sum += diameter
-                    hole.diameter = diameter
+                    bolt.diameter = diameter
+                    
                 }else{
-                    if let diameter = holeList[hole.name] {
-                        sum += Float(diameter)
-                        hole.diameter = Float(diameter)
+                    if selectedPipeType == "SGP"{
+                        if let diameter = SGPDiameters[bolt.name] {
+                            sum += Float(diameter)
+                            bolt.diameter = Float(diameter)
+                        }
+                    }else{
+                        if let diameter = VPDiameters[bolt.name] {
+                            sum += Float(diameter)
+                            bolt.diameter = Float(diameter)
+                        }
                     }
+                    
                 }
             }else{
-                if let diameter = holeList[hole.name] {
-                    sum += Float(diameter)
-                    hole.diameter = Float(diameter)
+                if selectedPipeType == "SGP"{
+                    if let diameter = SGPDiameters[bolt.name] {
+                        sum += Float(diameter)
+                        bolt.diameter = Float(diameter)
+                    }
+                }else{
+                    if let diameter = VPDiameters[bolt.name] {
+                        sum += Float(diameter)
+                        bolt.diameter = Float(diameter)
+                    }
                 }
             }
             dispatchGroup.leave()
@@ -713,28 +664,41 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
         dispatchGroup.notify(queue: .main){
             let dg = DispatchGroup()
             //box両端の余長
-            let edgeLength = (boxLength - (sum + ( Float(self.holes.count - 1) * pipeInterval))) / 2.0
-            self.railLength = sum + pipeInterval * Float(self.holes.count - 1) + 2 * railEx
+            self.railLength = sum + pipeInterval * Float(self.bolts.count - 1) + 2 * railEx
             
-            if edgeLength < 0{
-                HUD.flash(.labeledError(title: "エラー", subtitle: "BOX幅が足りません"),delay: 0.4)
-                return
-            }
+            let maxBolt = self.bolts.max(by: {$0.diameter < $1.diameter })?.diameter ?? 28
+           
+//            let boxHeight = maxBolt + 20
+            let boxHeight : Float = 30.0
             
-            for index in 0 ..< self.holes.count{
+            
+            for (index,bolt) in self.bolts.enumerated(){
                 dg.enter()
-                let resultY = self.holes[index].diameter / 2 + railHeight
+                let resultY = boxHeight / 2
                 if index == 0{
-                    let  resultX = edgeLength + self.holes[index].diameter / 2
-                    let result = Result(x: resultX, y: resultY)
-                    result.interval = resultX
+                    let  x0 = railEx + self.uBoltsDiameter / 2
+                    let x1 = x0 + bolt.P
+                    let result = Result(x0: x0, x1: x1, y: resultY,interval0:x0)
                     self.results.append(result)
                 }
                 if index >= 1{
-                    let resultX = self.results[index - 1].x + ( self.holes[index - 1].diameter  +  self.holes[index].diameter ) / 2 + pipeInterval
-                    let interval = ( self.holes[index - 1].diameter  +  self.holes[index].diameter ) / 2 + pipeInterval
-                    let result = Result(x: resultX, y: resultY)
-                    result.interval = interval
+                    let previousPipeCenter = (self.results[index - 1].x0 +  self.results[index - 1].x1) / 2
+                    let currentPipeCenter = previousPipeCenter + self.bolts[index - 1].diameter / 2 + pipeInterval + bolt.diameter / 2
+                    let resultX = currentPipeCenter - bolt.P / 2
+                    let interval = resultX - self.results[index - 1].x1
+                    
+                    if resultX - self.results[index - 1].x1 < self.uBoltsDiameter{
+                        let alert = UIAlertController(title: "エラー", message: "配管隙間の値を\(pipeInterval - interval + self.uBoltsDiameter)以上にしてください", preferredStyle: .alert)
+                        let ok = UIAlertAction(title: "OK", style:.default)
+                        alert.addAction(ok)
+                        self.present(alert, animated: true)
+                        return
+                    }
+//                    let resultX = self.results[index - 1].x1 + ( self.bolts[index - 1].diameter  +  self.bolts[index].diameter ) / 2 + pipeInterval
+                    let x1 = resultX + bolt.P
+                    let interval0 = ( self.bolts[index - 1].diameter  +  self.bolts[index].diameter ) / 2 + pipeInterval
+                    let result = Result(x0: resultX, x1: x1, y: resultY,interval0:interval0)
+                    
                     self.results.append(result)
                 }
                 print(self.results[index])
@@ -742,19 +706,17 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
             }
             
             dg.notify(queue: .main){
-               //ここまできたらエラーがないので広告表示
-                if let interstitial = self.interstitial{
-                    interstitial.present(fromRootViewController: self)
-                }
                 if let parent = self.parent as? PagerTabStripViewController{
+                    let length = self.results.last!.x1 + railEx + self.uBoltsDiameter / 2
+                    self.railLength = length
                     parent.moveToViewController(at: 1)
                     let vc = parent.viewControllers[1] as! ResultViewController
                     vc.results = self.results
-                    vc.holes  = self.holes
-                    vc.boxLength = boxLength
+                    vc.bolts  = self.bolts
+                    vc.uBoltsDiameter = self.uBoltsDiameter
+                    vc.boxLength = self.railLength
                     vc.railLength = self.railLength
                     vc.railEx = railEx
-                    vc.railHeight = railHeight
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                         vc.renderDrawingView()
                     }
@@ -769,8 +731,8 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
     }
     
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        let itemToMove = holes.remove(at: sourceIndexPath.row)
-        holes.insert(itemToMove, at: destinationIndexPath.row)
+        let itemToMove = bolts.remove(at: sourceIndexPath.row)
+        bolts.insert(itemToMove, at: destinationIndexPath.row)
     }
     
     
@@ -825,12 +787,12 @@ extension InputViewController:DynamicTableViewCellDelegate{
         self.selectedIndex = nil
         guard let indexPath = self.tableView.indexPath(for: cell) else{return}
         let index = indexPath.row - staticCellStrings.count
-        self.holes.remove(at: index)
+        self.bolts.remove(at: index)
         tableView.deleteRows(at: [indexPath], with: .left)
-        pipeNumText = self.holes.count
+        pipeNumText = self.bolts.count
         if let pipeNumCell = tableView.cellForRow(at: IndexPath(row: 5, section: 0)) as? StaticTableViewCell{
-        pipeNumCell.inputTextField.text = "\(self.holes.count)"
-        pipeNumCell.numberLabel.text = "\(self.holes.count)"
+        pipeNumCell.inputTextField.text = "\(self.bolts.count)"
+        pipeNumCell.numberLabel.text = "\(self.bolts.count)"
         }
     }
 }
@@ -850,10 +812,10 @@ extension InputViewController :UIPickerViewDelegate,UIPickerViewDataSource{
         case 2:
             return numberOfPipes.count
         case 3:
-            if selectedPipeType == "厚鋼"{
-                return GPipe.count
+            if selectedPipeType == "SGP"{
+                return SGP.count
             }else{
-                return CPipe.count
+                return HIVP.count
             }
         default:
             return 0
@@ -870,10 +832,10 @@ extension InputViewController :UIPickerViewDelegate,UIPickerViewDataSource{
             let int = numberOfPipes[row]
             return String(int)
         case 3:
-            if selectedPipeType == "厚鋼"{
-                return GPipe[row]
+            if selectedPipeType == "SGP"{
+                return SGP[row]
             }else{
-                return CPipe[row]
+                return HIVP[row]
             }
         default:
             return ""
@@ -902,13 +864,13 @@ extension InputViewController :UIPickerViewDelegate,UIPickerViewDataSource{
         
         }
             }else{
-                if selectedPipeType == "厚鋼" {
+                if selectedPipeType == "SGP" {
                     let cell = tableView.cellForRow(at:selectedIndex) as! DynamicTableViewCell
-                    let string = GPipe[row]
+                    let string = SGP[row]
 //                    cell.inputTextField.text = string
                 }else{
                     let cell = tableView.cellForRow(at:selectedIndex) as! DynamicTableViewCell
-                    let string = CPipe[row]
+                    let string = HIVP[row]
 //                    cell.inputTextField.text = string
                 }
 

@@ -74,7 +74,7 @@
 		3D43FB00ACF5D4B98DF129DC /* Pods-BoxProcessingTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BoxProcessingTests.debug.xcconfig"; path = "Target Support Files/Pods-BoxProcessingTests/Pods-BoxProcessingTests.debug.xcconfig"; sourceTree = "<group>"; };
 		3E4B234F28E01827002D52DA /* SettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
 		3E4B235128E0185F002D52DA /* TutorialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialViewController.swift; sourceTree = "<group>"; };
-		3E6289A628CC6124003E20F6 /* BoxProcessing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BoxProcessing.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3E6289A628CC6124003E20F6 /* AngleProcessing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AngleProcessing.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E6289A928CC6124003E20F6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3E6289AB28CC6124003E20F6 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		3E6289AD28CC6124003E20F6 /* InputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputViewController.swift; sourceTree = "<group>"; };
@@ -82,9 +82,9 @@
 		3E6289B228CC6127003E20F6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3E6289B528CC6127003E20F6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3E6289B728CC6127003E20F6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		3E6289BC28CC6127003E20F6 /* BoxProcessingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BoxProcessingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		3E6289BC28CC6127003E20F6 /* AngleProcessingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AngleProcessingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E6289C028CC6127003E20F6 /* BoxProcessingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoxProcessingTests.swift; sourceTree = "<group>"; };
-		3E6289C628CC6127003E20F6 /* BoxProcessingUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BoxProcessingUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		3E6289C628CC6127003E20F6 /* AngleProcessingUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AngleProcessingUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3E6289CA28CC6127003E20F6 /* BoxProcessingUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoxProcessingUITests.swift; sourceTree = "<group>"; };
 		3E6289CC28CC6127003E20F6 /* BoxProcessingUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoxProcessingUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		3E8C7F5E28CD84B8006A3000 /* DynamicTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicTableViewCell.swift; sourceTree = "<group>"; };
@@ -154,7 +154,7 @@
 		3E62899D28CC6124003E20F6 = {
 			isa = PBXGroup;
 			children = (
-				3E6289A828CC6124003E20F6 /* BoxProcessing */,
+				3E6289A828CC6124003E20F6 /* AngleProcessing */,
 				3E6289BF28CC6127003E20F6 /* BoxProcessingTests */,
 				3E6289C928CC6127003E20F6 /* BoxProcessingUITests */,
 				3E6289A728CC6124003E20F6 /* Products */,
@@ -166,14 +166,14 @@
 		3E6289A728CC6124003E20F6 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				3E6289A628CC6124003E20F6 /* BoxProcessing.app */,
-				3E6289BC28CC6127003E20F6 /* BoxProcessingTests.xctest */,
-				3E6289C628CC6127003E20F6 /* BoxProcessingUITests.xctest */,
+				3E6289A628CC6124003E20F6 /* AngleProcessing.app */,
+				3E6289BC28CC6127003E20F6 /* AngleProcessingTests.xctest */,
+				3E6289C628CC6127003E20F6 /* AngleProcessingUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		3E6289A828CC6124003E20F6 /* BoxProcessing */ = {
+		3E6289A828CC6124003E20F6 /* AngleProcessing */ = {
 			isa = PBXGroup;
 			children = (
 				3EFA3B8229579C5800DBC9E4 /* JobListView */,
@@ -190,7 +190,7 @@
 				3E95919B28CC7AA900AE98AB /* Utility.swift */,
 				3E4B235128E0185F002D52DA /* TutorialViewController.swift */,
 			);
-			path = BoxProcessing;
+			path = AngleProcessing;
 			sourceTree = "<group>";
 		};
 		3E6289BF28CC6127003E20F6 /* BoxProcessingTests */ = {
@@ -292,9 +292,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		3E6289A528CC6124003E20F6 /* BoxProcessing */ = {
+		3E6289A528CC6124003E20F6 /* AngleProcessing */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3E6289D028CC6127003E20F6 /* Build configuration list for PBXNativeTarget "BoxProcessing" */;
+			buildConfigurationList = 3E6289D028CC6127003E20F6 /* Build configuration list for PBXNativeTarget "AngleProcessing" */;
 			buildPhases = (
 				12D9D2C67CFFD1008EBE604F /* [CP] Check Pods Manifest.lock */,
 				3E6289A228CC6124003E20F6 /* Sources */,
@@ -306,14 +306,14 @@
 			);
 			dependencies = (
 			);
-			name = BoxProcessing;
+			name = AngleProcessing;
 			productName = BoxProcessing;
-			productReference = 3E6289A628CC6124003E20F6 /* BoxProcessing.app */;
+			productReference = 3E6289A628CC6124003E20F6 /* AngleProcessing.app */;
 			productType = "com.apple.product-type.application";
 		};
-		3E6289BB28CC6127003E20F6 /* BoxProcessingTests */ = {
+		3E6289BB28CC6127003E20F6 /* AngleProcessingTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3E6289D328CC6127003E20F6 /* Build configuration list for PBXNativeTarget "BoxProcessingTests" */;
+			buildConfigurationList = 3E6289D328CC6127003E20F6 /* Build configuration list for PBXNativeTarget "AngleProcessingTests" */;
 			buildPhases = (
 				F719CAE21016C95007F00E03 /* [CP] Check Pods Manifest.lock */,
 				3E6289B828CC6127003E20F6 /* Sources */,
@@ -325,14 +325,14 @@
 			dependencies = (
 				3E6289BE28CC6127003E20F6 /* PBXTargetDependency */,
 			);
-			name = BoxProcessingTests;
+			name = AngleProcessingTests;
 			productName = BoxProcessingTests;
-			productReference = 3E6289BC28CC6127003E20F6 /* BoxProcessingTests.xctest */;
+			productReference = 3E6289BC28CC6127003E20F6 /* AngleProcessingTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		3E6289C528CC6127003E20F6 /* BoxProcessingUITests */ = {
+		3E6289C528CC6127003E20F6 /* AngleProcessingUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3E6289D628CC6127003E20F6 /* Build configuration list for PBXNativeTarget "BoxProcessingUITests" */;
+			buildConfigurationList = 3E6289D628CC6127003E20F6 /* Build configuration list for PBXNativeTarget "AngleProcessingUITests" */;
 			buildPhases = (
 				E27805130C5FE4B56F064F27 /* [CP] Check Pods Manifest.lock */,
 				3E6289C228CC6127003E20F6 /* Sources */,
@@ -345,9 +345,9 @@
 			dependencies = (
 				3E6289C828CC6127003E20F6 /* PBXTargetDependency */,
 			);
-			name = BoxProcessingUITests;
+			name = AngleProcessingUITests;
 			productName = BoxProcessingUITests;
-			productReference = 3E6289C628CC6127003E20F6 /* BoxProcessingUITests.xctest */;
+			productReference = 3E6289C628CC6127003E20F6 /* AngleProcessingUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -373,7 +373,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 3E6289A128CC6124003E20F6 /* Build configuration list for PBXProject "BoxProcessing" */;
+			buildConfigurationList = 3E6289A128CC6124003E20F6 /* Build configuration list for PBXProject "AngleProcessing" */;
 			compatibilityVersion = "Xcode 13.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -386,9 +386,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				3E6289A528CC6124003E20F6 /* BoxProcessing */,
-				3E6289BB28CC6127003E20F6 /* BoxProcessingTests */,
-				3E6289C528CC6127003E20F6 /* BoxProcessingUITests */,
+				3E6289A528CC6124003E20F6 /* AngleProcessing */,
+				3E6289BB28CC6127003E20F6 /* AngleProcessingTests */,
+				3E6289C528CC6127003E20F6 /* AngleProcessingUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -586,12 +586,12 @@
 /* Begin PBXTargetDependency section */
 		3E6289BE28CC6127003E20F6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 3E6289A528CC6124003E20F6 /* BoxProcessing */;
+			target = 3E6289A528CC6124003E20F6 /* AngleProcessing */;
 			targetProxy = 3E6289BD28CC6127003E20F6 /* PBXContainerItemProxy */;
 		};
 		3E6289C828CC6127003E20F6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 3E6289A528CC6124003E20F6 /* BoxProcessing */;
+			target = 3E6289A528CC6124003E20F6 /* AngleProcessing */;
 			targetProxy = 3E6289C728CC6127003E20F6 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -737,12 +737,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 667P28VCK6;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = BoxProcessing/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "BOX加工";
-				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_FILE = AngleProcessing/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "アングル加工";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -753,8 +753,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.Ikejimadenki.BOX;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Ikejimadenki.Angle;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -769,12 +769,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 667P28VCK6;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = BoxProcessing/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "BOX加工";
-				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_FILE = AngleProcessing/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "アングル加工";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -785,8 +785,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.Ikejimadenki.BOX;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Ikejimadenki.Angle;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -811,7 +811,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BoxProcessing.app/BoxProcessing";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AngleProcessing.app/AngleProcessing";
 			};
 			name = Debug;
 		};
@@ -832,7 +832,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BoxProcessing.app/BoxProcessing";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AngleProcessing.app/AngleProcessing";
 			};
 			name = Release;
 		};
@@ -877,7 +877,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		3E6289A128CC6124003E20F6 /* Build configuration list for PBXProject "BoxProcessing" */ = {
+		3E6289A128CC6124003E20F6 /* Build configuration list for PBXProject "AngleProcessing" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3E6289CE28CC6127003E20F6 /* Debug */,
@@ -886,7 +886,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		3E6289D028CC6127003E20F6 /* Build configuration list for PBXNativeTarget "BoxProcessing" */ = {
+		3E6289D028CC6127003E20F6 /* Build configuration list for PBXNativeTarget "AngleProcessing" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3E6289D128CC6127003E20F6 /* Debug */,
@@ -895,7 +895,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		3E6289D328CC6127003E20F6 /* Build configuration list for PBXNativeTarget "BoxProcessingTests" */ = {
+		3E6289D328CC6127003E20F6 /* Build configuration list for PBXNativeTarget "AngleProcessingTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3E6289D428CC6127003E20F6 /* Debug */,
@@ -904,7 +904,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		3E6289D628CC6127003E20F6 /* Build configuration list for PBXNativeTarget "BoxProcessingUITests" */ = {
+		3E6289D628CC6127003E20F6 /* Build configuration list for PBXNativeTarget "AngleProcessingUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3E6289D728CC6127003E20F6 /* Debug */,

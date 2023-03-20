@@ -28,7 +28,7 @@ class ResultTableViewHeader: UITableViewHeaderFooterView {
         let underLineAttributedStringX = NSAttributedString(string: "X座標", attributes: underLineAttirbute)
         xLabel.attributedText = underLineAttributedStringX
         
-        let underLineAttributedStringY = NSAttributedString(string: "Y座標", attributes: underLineAttirbuteY)
+        let underLineAttributedStringY = NSAttributedString(string: "X座標", attributes: underLineAttirbuteY)
         yLabel.attributedText = underLineAttributedStringY
         
         

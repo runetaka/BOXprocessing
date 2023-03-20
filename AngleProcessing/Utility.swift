@@ -485,3 +485,10 @@ extension UIBezierPath {
     }
 
 }
+
+extension Float{
+    func floorNum() -> Float{
+        let numFloor = floor(self*100)/100
+        return numFloor
+    }
+}

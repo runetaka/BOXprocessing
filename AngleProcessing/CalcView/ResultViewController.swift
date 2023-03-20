@@ -15,7 +15,14 @@ class UserColor{
     var yColor : UIColor?
 }
 
-class ResultViewController:UIViewController{
+class ResultViewController:UIViewController, ResultTableViewCellDelegate{
+    
+    
+    func changeDisplayLabel(index: Int) {
+        self.didSelectRow(indexPath: IndexPath(row: index, section: 0))
+        
+    }
+    
     
     @IBOutlet weak var pullDownMenu: UIView!
     
@@ -34,7 +41,8 @@ class ResultViewController:UIViewController{
     var calcMode = 0
     
     var results :[Result]?
-    var holes :[Hole]?
+//    var holes :[Hole]?
+    var bolts :[UBolts]?
     var boxLength :Float?
     var railLength :Float?
     var railEx :Float?
@@ -48,10 +56,13 @@ class ResultViewController:UIViewController{
     var beforeScale : CGFloat?
     var labelXPosition : CGPoint?
     var labelYPosition : CGPoint?
-    
+    var pipeLabels : [UILabel] = []
     //tutorial
     let coachMarksController = CoachMarksController()
 
+    var uBoltsDiameter: Float = 12  //Uボルト穴径
+
+    var displayLabel : [Int:Bool] = [:]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -75,6 +86,7 @@ class ResultViewController:UIViewController{
         coachMarksController.dataSource = self
         coachMarksController.overlay.backgroundColor = .black.withAlphaComponent(0.6)
         coachMarksController.overlay.isUserInteractionEnabled = true
+        
     }
     
 //    override func viewDidAppear(_ animated: Bool) {
@@ -119,10 +131,10 @@ class ResultViewController:UIViewController{
     
     func renderDrawingView(){
         //BOXと穴の描画
-        guard let holes = holes,let results = results,let boxLength = boxLength,let railLength = railLength,let railEx = railEx else{return}
+        guard let bolts = bolts,let results = results,let railLength = railLength,let railEx = railEx else{return}
         
-        
-        let contentWidth = CGFloat(boxLength + 200)
+       
+        let contentWidth = CGFloat(railLength + 200)
         self.drawingViewWidth.constant = contentWidth
         self.scrollView.contentSize = CGSize(width: contentWidth, height: 1000)
         scrollView.minimumZoomScale = scrollView.frame.width / contentWidth
@@ -133,43 +145,77 @@ class ResultViewController:UIViewController{
             self.labels.removeFirst()
         }
         boxView = UIView()
-        let maxHole = holes.max { hole, hole1 in
+        boxView.tag = bolts.count * 2 + 1
+        let maxHole = bolts.max { hole, hole1 in
             hole.diameter < hole1.diameter
         }?.diameter ?? 100.0
-        let boxHeight = maxHole + 30.0 + (railHeight ?? 0)
+//        let boxHeight = maxHole + 30.0 + (railHeight ?? 0)
+        let boxHeight = 30
         boxView.backgroundColor = .gray
         boxView.translatesAutoresizingMaskIntoConstraints = false
         self.drawingView.addSubview(boxView)
-        boxView.widthAnchor.constraint(equalToConstant: CGFloat(boxLength)).isActive = true
+        boxView.widthAnchor.constraint(equalToConstant: CGFloat(railLength)).isActive = true
         boxView.heightAnchor.constraint(equalToConstant: CGFloat(boxHeight)).isActive = true
         boxView.centerXAnchor.constraint(equalTo: drawingView.centerXAnchor).isActive = true
         boxView.centerYAnchor.constraint(equalTo: drawingView.centerYAnchor).isActive = true
-        let zoomScale = scrollView.frame.width / CGFloat(boxLength + 20.0)
+        addPipeLabel()
+
+        let zoomScale = scrollView.frame.width / CGFloat(railLength + 20.0)
         scrollView.setZoomScale(zoomScale, animated: true)
         let posx = (contentWidth * zoomScale - scrollView.frame.width) / 2
         let x = posx *  scrollView.frame.width / contentWidth / zoomScale
         
         scrollView.setContentOffset(CGPoint(x: posx, y: (scrollView.contentSize.height - scrollView.frame.height) / 2), animated: true)
-//        print("x",x,posx,zoomScale)
+
         var i = 1
-        for (hole,result) in zip(holes,results){
+        
+        
+        for (bolt,result) in zip(bolts,results){
+            let pipeView = UIView()
+            pipeView.layer.borderColor = UIColor.green.cgColor
+            pipeView.layer.borderWidth = 0.5
+            
+            pipeView.backgroundColor = .clear
+            boxView.addSubview(pipeView)
+            pipeView.translatesAutoresizingMaskIntoConstraints = false
+            pipeView.widthAnchor.constraint(equalToConstant: CGFloat(bolt.diameter)).isActive = true
+            pipeView.heightAnchor.constraint(equalToConstant: CGFloat(boxHeight + 50)).isActive = true
+            pipeView.centerXAnchor.constraint(equalTo: boxView.leadingAnchor, constant: CGFloat((result.x0 + result.x1) / 2)).isActive = true
+            pipeView.centerYAnchor.constraint(equalTo:boxView.bottomAnchor,constant: CGFloat(-result.y)).isActive = true
+            
+            
             let holeView = UIView()
             holeView.layer.borderColor = UIColor.green.cgColor
             holeView.layer.borderWidth = 0.5
             holeView.backgroundColor = .white
             boxView.addSubview(holeView)
             holeView.translatesAutoresizingMaskIntoConstraints = false
-            holeView.widthAnchor.constraint(equalToConstant: CGFloat(hole.diameter)).isActive = true
-            holeView.heightAnchor.constraint(equalToConstant: CGFloat(hole.diameter)).isActive = true
-            holeView.centerXAnchor.constraint(equalTo: boxView.leadingAnchor, constant: CGFloat(result.x)).isActive = true
+            holeView.widthAnchor.constraint(equalToConstant: CGFloat(uBoltsDiameter)).isActive = true
+            holeView.heightAnchor.constraint(equalToConstant: CGFloat(uBoltsDiameter)).isActive = true
+            holeView.centerXAnchor.constraint(equalTo: boxView.leadingAnchor, constant: CGFloat(result.x0)).isActive = true
             holeView.centerYAnchor.constraint(equalTo:boxView.bottomAnchor,constant: CGFloat(-result.y)).isActive = true
-            holeView.cornerRadius = CGFloat(hole.diameter / 2)
-            let gesture = UITapGestureRecognizer(target: self, action: #selector(didSelectHole))
-            holeView.addGestureRecognizer(gesture)
+            holeView.cornerRadius = CGFloat(uBoltsDiameter / 2)
+            let gesture0 = UITapGestureRecognizer(target: self, action: #selector(didSelectHole))
+            holeView.addGestureRecognizer(gesture0)
             holeView.tag = i
             i += 1
+            let holeView1 = UIView()
+            holeView1.layer.borderColor = UIColor.green.cgColor
+            holeView1.layer.borderWidth = 0.5
+            holeView1.backgroundColor = .white
+            boxView.addSubview(holeView1)
+            holeView1.translatesAutoresizingMaskIntoConstraints = false
+            holeView1.widthAnchor.constraint(equalToConstant: CGFloat(uBoltsDiameter)).isActive = true
+            holeView1.heightAnchor.constraint(equalToConstant: CGFloat(uBoltsDiameter)).isActive = true
+            holeView1.centerXAnchor.constraint(equalTo: boxView.leadingAnchor, constant: CGFloat(result.x1)).isActive = true
+            holeView1.centerYAnchor.constraint(equalTo:boxView.bottomAnchor,constant: CGFloat(-result.y)).isActive = true
+            holeView1.cornerRadius = CGFloat(uBoltsDiameter / 2)
+            let gesture1 = UITapGestureRecognizer(target: self, action: #selector(didSelectHole))
+            holeView1.addGestureRecognizer(gesture1)
+            holeView1.tag = i
+            i += 1
         }
-        
+
         self.tableView.reloadData()
         
         let tutorialIsShown = UserDefaults.standard.bool(forKey: "tutorial")
@@ -184,36 +230,69 @@ class ResultViewController:UIViewController{
     @objc func didSelectHole(sender:UITapGestureRecognizer){
         if let tag = sender.view?.tag{
             let index = tag - 1
-            if let hole = holes?[index]{
-                self.tableView.selectRow(at: IndexPath(row: tag - 1, section: 0), animated: false, scrollPosition: .top)
-                guard let sender = sender.view else{return}
-                let lineWidth :CGFloat = 1.0
-                let midY  = (sender.center.y  +  boxView.frame.minY + boxView.frame.maxY) / 2
-                let isOver = midY - 40 / 2  + 40 > boxView.frame.maxY ? true : false
-                if self.calcMode == 0{
+            
+            self.tableView.selectRow(at: IndexPath(row: Int((tag-1) / 2), section: 0), animated: false, scrollPosition: .top)
+            guard let sender = sender.view else{return}
+            let lineWidth :CGFloat = 1.0
+            let midY  = (sender.center.y  +  boxView.frame.minY + boxView.frame.maxY) / 2
+            let isOver = midY - 40 / 2  + 40 > boxView.frame.maxY ? true : false
+            if self.calcMode == 0{
+                addLine(fromX:sender.center , toX: CGPoint(x:lineWidth / 2 , y: sender.frame.midY), fromY: sender.center, toY: CGPoint(x:sender.center.x,y: boxView.frame.height - lineWidth / 2), isOver: isOver)
+            }else if self.calcMode == 1{
+                if index == 0{
                     addLine(fromX:sender.center , toX: CGPoint(x:lineWidth / 2 , y: sender.frame.midY), fromY: sender.center, toY: CGPoint(x:sender.center.x,y: boxView.frame.height - lineWidth / 2), isOver: isOver)
-                }else if self.calcMode == 1{
-                    if index == 0{
-                        addLine(fromX:sender.center , toX: CGPoint(x:lineWidth / 2 , y: sender.frame.midY), fromY: sender.center, toY: CGPoint(x:sender.center.x,y: boxView.frame.height - lineWidth / 2), isOver: isOver)
-                    }else{
-                        //二番目以降の穴
-                        guard let sender2 = drawingView.viewWithTag(index) else{return}
-                        addLine(fromX:sender.center , toX: CGPoint(x:lineWidth / 2 + sender2.center.x , y: sender.frame.midY), fromY: sender.center, toY: CGPoint(x:sender.center.x,y: boxView.frame.height - lineWidth / 2), isOver: isOver)
-                    }
+                }else{
+                    //二番目以降の穴
+                    guard let sender2 = drawingView.viewWithTag(index) else{return}
+                    addLine(fromX:sender.center , toX: CGPoint(x:lineWidth / 2 + sender2.center.x , y: sender.frame.midY), fromY: sender.center, toY: CGPoint(x:sender.center.x,y: boxView.frame.height - lineWidth / 2), isOver: isOver)
                 }
-                addLabel(index: index, sender: sender)
-                
-                
             }
+            addLabel(index: index, sender: sender)
+            
+        }
+        
+    }
+    
+    func addPipeLabel(){
+        guard let bolts = bolts,let results = results else{return}
+        let lineTopY :CGFloat = -20 + boxView.frame.minY
+        let zoomScale = scrollView.zoomScale
+
+        for label in pipeLabels{
+            label.removeFromSuperview()
+        }
+        
+        for (bolt,result) in zip(bolts,results){
+            let pipeLabel = UILabel()
+            pipeLabel.tag = 0
+            pipeLabel.textAlignment = .center
+            pipeLabel.adjustsFontSizeToFitWidth = true
+            pipeLabel.text = bolt.name
+            
+            self.drawingView.addSubview(pipeLabel)
+            self.pipeLabels.append(pipeLabel)
+            let xx :CGFloat  = CGFloat((result.x0 + result.x1) / 2) + boxView.frame.minX
+//                    xy = boxView.frame.minY + sender.center.y - height + 5
+            let xy = lineTopY
+            pipeLabel.frame.size = CGSize(width: 100 / zoomScale, height: 40 / zoomScale)
+            pipeLabel.font = .systemFont(ofSize: 17 / zoomScale )
+            pipeLabel.frame.origin = CGPoint(x: xx - 50 / zoomScale, y: xy - 40 / zoomScale)
+            
         }
     }
     func addLabel(index:Int,sender:UIView){
+        addPipeLabel()
         let zoomScale = scrollView.zoomScale
-        if let result = self.results?[index]{
-            for label in labels {
-                label.removeFromSuperview()
-                self.labels.removeFirst()
-            }
+        guard let results = results else{return}
+        for label in labels {
+            label.removeFromSuperview()
+            self.labels.removeFirst()
+        }
+        displayLabel = [:]
+        displayLabel[index] = true
+        self.tableView.reloadData()
+            
+            
             let labelX = UILabel()
             labelX.tag = 0
             labelX.numberOfLines = 0
@@ -222,15 +301,30 @@ class ResultViewController:UIViewController{
             
             let width :CGFloat = 100
             let height :CGFloat = 40
-//            print(sender.center.x,boxView.frame.minX)
+            //            print(sender.center.x,boxView.frame.minX)
             var xx :CGFloat
             var xy :CGFloat
             let lineTopY :CGFloat = -10 + boxView.frame.minY
-
+            let isX0 = index % 2 == 0 ? true : false
+        
+        if results.count <= Int(index / 2){
+            labelX.text = String(railLength ?? 100)
+            xx = boxView.frame.minX + boxView.frame.maxX / 2
+            xy = lineTopY
+            labelX.frame.size = CGSize(width: 100 / zoomScale, height: 40 / zoomScale)
+            labelX.font = .systemFont(ofSize: 17 / zoomScale )
+            labelX.sizeToFit()
+            labelX.frame.origin = CGPoint(x: xx - labelX.frame.width / 2, y: xy - labelX.frame.height)
+            self.labelXPosition = CGPoint(x: xx, y: xy)
+            self.drawingView.addSubview(labelX)
+            self.labels.append(labelX)
+            return
+        }else{
+            let result = results[Int(index / 2)]
             if calcMode == 0{
-                labelX.text = String(result.x)
+                labelX.text = isX0 ?  String(result.x0) : String(result.x1)
                 xx  = (sender.center.x + 2 * boxView.frame.minX) / 2 - width / 2
-//                xy = boxView.frame.minY + sender.center.y - height + 5
+                //                xy = boxView.frame.minY + sender.center.y - height + 5
                 xy = lineTopY
                 
                 labelX.frame.size = CGSize(width: 100 / zoomScale, height: 40 / zoomScale)
@@ -238,72 +332,71 @@ class ResultViewController:UIViewController{
                 labelX.sizeToFit()
                 labelX.frame.origin = CGPoint(x: (sender.center.x + 2 * boxView.frame.minX) / 2 - labelX.frame.width / 2, y: xy - labelX.frame.height)
                 self.labelXPosition = CGPoint(x: (sender.center.x + 2 * boxView.frame.minX) / 2, y: xy)
-
             }else{
-                if let interval = result.interval{
-                    labelX.text = String(interval)
-                }
+                
+                labelX.text = isX0 ? String(result.interval0) : String(result.interval1)
+                
                 let lineTopY :CGFloat = -10 + boxView.frame.minY
-
+                
                 if index == 0{
                     xx  = (sender.center.x + 2 * boxView.frame.minX) / 2 - width / 2
-//                    xy = boxView.frame.minY + sender.center.y - height + 5
+                    //                    xy = boxView.frame.minY + sender.center.y - height + 5
                     xy = lineTopY
                     labelX.frame.size = CGSize(width: 100 / zoomScale, height: 40 / zoomScale)
                     labelX.font = .systemFont(ofSize: 17 / zoomScale )
                     labelX.frame.origin = CGPoint(x: (sender.center.x + 2 * boxView.frame.minX) / 2 - 50 / zoomScale, y: xy - 40 / zoomScale)
                     self.labelXPosition = CGPoint(x: (sender.center.x + 2 * boxView.frame.minX) / 2, y:xy)
-
+                    
                 }else{
-
+                    
                     guard let sender2 = drawingView.viewWithTag(index) else{
                         xx  = (sender.center.x + boxView.frame.minX) / 2 - width / 2
                         xy = boxView.frame.minY + sender.center.y - height + 5
                         return
                     }
                     xx  = (sender.center.x + 2 * boxView.frame.minX + sender2.center.x) / 2 - width / 2
-//                    xy = boxView.frame.minY + sender.center.y - height + 5
+                    //                    xy = boxView.frame.minY + sender.center.y - height + 5
                     xy = lineTopY
                     labelX.frame.size = CGSize(width: 100 / zoomScale, height: 40 / zoomScale)
                     labelX.font = .systemFont(ofSize: 17 / zoomScale )
                     labelX.frame.origin = CGPoint(x: (sender.center.x + sender2.center.x + 2 * boxView.frame.minX) / 2 - 50 / zoomScale, y: xy - 40 / zoomScale)
                     
                     self.labelXPosition = CGPoint(x: (sender.center.x + sender2.center.x + 2 * boxView.frame.minX) / 2, y: xy)
-
+                    
                 }
             }
             
             self.drawingView.addSubview(labelX)
             self.labels.append(labelX)
             
-            let labelY = UILabel()
-            labelY.tag = 1
-            labelY.textAlignment = .left
-            labelY.adjustsFontSizeToFitWidth = true
-            labelY.text = String(result.y)
-//            print(sender.center.x,boxView.frame.minX)
-            let yx  = boxView.frame.minX + sender.center.x + 5
-            let midY  = (sender.center.y  +  boxView.frame.minY + boxView.frame.maxY) / 2
-            let yy = midY - height / 2  + height > boxView.frame.maxY ? boxView.frame.maxY : midY - height / 2
-            labelY.frame = CGRect(x:yx  , y: yy , width: width, height: height)
-            
-            labelY.frame.size = CGSize(width: 100 / zoomScale, height: 40 / zoomScale)
-            labelY.font = .systemFont(ofSize: 17 / zoomScale )
-
-            //倍率によってポジション調整
-            if  midY - height / 2  + height > boxView.frame.maxY{
-                self.labelYPosition = CGPoint(x: yx, y: boxView.frame.maxY)
-                labelY.frame.origin = CGPoint(x: yx, y: boxView.frame.maxY + 20 * (1 - 1 / zoomScale))
-            }else{
-                self.labelYPosition = CGPoint(x: yx, y: midY)
-                labelY.frame.origin = CGPoint(x: yx, y: midY - 20 / zoomScale)
-            }
-            //倍率によってポジション調整(ここまで)
-            
-            self.drawingView.addSubview(labelY)
-            self.labels.append(labelY)
+//            let labelY = UILabel()
+//            labelY.tag = 1
+//            labelY.textAlignment = .left
+//            labelY.adjustsFontSizeToFitWidth = true
+//            labelY.text = String(result.y)
+//            //            print(sender.center.x,boxView.frame.minX)
+//            let yx  = boxView.frame.minX + sender.center.x + 5
+//            let midY  = (sender.center.y  +  boxView.frame.minY + boxView.frame.maxY) / 2
+//            let yy = midY - height / 2  + height > boxView.frame.maxY ? boxView.frame.maxY : midY - height / 2
+//            labelY.frame = CGRect(x:yx  , y: yy , width: width, height: height)
+//            
+//            labelY.frame.size = CGSize(width: 100 / zoomScale, height: 40 / zoomScale)
+//            labelY.font = .systemFont(ofSize: 17 / zoomScale )
+//            
+//            //倍率によってポジション調整
+//            if  midY - height / 2  + height > boxView.frame.maxY{
+//                self.labelYPosition = CGPoint(x: yx, y: boxView.frame.maxY)
+//                labelY.frame.origin = CGPoint(x: yx, y: boxView.frame.maxY + 20 * (1 - 1 / zoomScale))
+//            }else{
+//                self.labelYPosition = CGPoint(x: yx, y: midY)
+//                labelY.frame.origin = CGPoint(x: yx, y: midY - 20 / zoomScale)
+//            }
+//            //倍率によってポジション調整(ここまで)
+//            
+//            self.drawingView.addSubview(labelY)
+//            self.labels.append(labelY)
+//            
         }
-
     }
     func didSelectRow(indexPath:IndexPath){
         guard let sender = drawingView.viewWithTag(indexPath.row + 1) else{return}
@@ -332,7 +425,7 @@ class ResultViewController:UIViewController{
 //        }else if calcMode == 1{
             print(self.boxView.frame.minY)
             let lineTopY :CGFloat = -10
-            arrow.addArrowIntervalPipes(start: fromX, end: toX, lineTopY: lineTopY, pointerLineLength: 10, arrowAngle: CGFloat(Double.pi / 6), lineWidth: 1.0)
+            arrow.addArrowIntervalPipes(start: fromX, end: toX, lineTopY: lineTopY, pointerLineLength: 5, arrowAngle: CGFloat(Double.pi / 6), lineWidth: 1.0)
 //        }
         let arrowY = UIBezierPath()
         let pointerLineLength :CGFloat = toY.y - fromY.y < 20 ? 5 : 10
@@ -385,19 +478,32 @@ extension ResultViewController: IndicatorInfoProvider,UIScrollViewDelegate,UITab
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "resultCell") as! ResultTableViewCell
+        cell.delegate = self
         cell.ymmLabel.isHidden = false
+        cell.xEyeImage.isHidden = true
+        cell.yEyeImage.isHidden = true
+        cell.yShadowView.isHidden = false
+        
+        if displayLabel[indexPath.row * 2] == true{
+            cell.xEyeImage.isHidden = false
+        }else if displayLabel[indexPath.row  * 2 + 1] == true{
+            cell.yEyeImage.isHidden = false
+        }
         if results?.count ?? 0 > indexPath.row{
-        if let hole = holes?[indexPath.row],let result = results?[indexPath.row]{
+        if let bolt = bolts?[indexPath.row],let result = results?[indexPath.row]{
             if self.calcMode == 0 {
-                cell.nameLabel.text = hole.name
-                cell.xpositionLabel.text = String(result.x)
-                cell.ypositionLabel.text = String(result.y)
+                cell.nameLabel.text = bolt.name
+                
+                cell.xpositionLabel.text = String(result.x0.floorNum())
+                cell.ypositionLabel.text = String(result.x1.floorNum())
+                cell.xShadowView.tag = indexPath.row * 2
+                cell.yShadowView.tag = indexPath.row * 2 + 1
             }else{
-                cell.nameLabel.text = hole.name
-                if let interval = result.interval{
-                    cell.xpositionLabel.text = String(interval)
-                }
-                cell.ypositionLabel.text = String(result.y)
+                cell.nameLabel.text = bolt.name
+                cell.xpositionLabel.text = String(result.interval0.floorNum())
+                cell.ypositionLabel.text = String(result.interval1.floorNum())
+                cell.xShadowView.tag = indexPath.row * 2
+                cell.yShadowView.tag = indexPath.row * 2 + 1
             }
         }
             return cell
@@ -405,9 +511,11 @@ extension ResultViewController: IndicatorInfoProvider,UIScrollViewDelegate,UITab
             cell.ypositionLabel.text = nil
             if let railLength = self.railLength{
                 cell.nameLabel.text = "レール全長"
-                cell.xpositionLabel.text = "\(railLength)"
-                cell.ymmLabel.isHidden = true
                 
+                cell.xpositionLabel.text = "\(railLength.floorNum())"
+                cell.ymmLabel.isHidden = true
+                cell.yShadowView.isHidden = true
+                cell.xShadowView.tag = indexPath.row * 2
             }
             return cell
         }

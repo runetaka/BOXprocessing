@@ -20,6 +20,18 @@ class Hole {
     
 }
 
+class UBolts{
+    var Plist : [String:Float] = ["10A":28,"15A":34,"20A":40,"25A":46,"32A":56,"40A":62,"50A":74,"65A":88,"80A":101,"90A":115,"100A":126,"125A":152,"150A":180]
+    var name : String = "10A"
+    var diameter : Float = 17.3
+    var P : Float = 28.0
+    
+    init(name: String) {
+        self.name = name
+        self.P = Plist[name] ?? 28
+    }
+}
+
 class Diameter{
     
     var g:G?
@@ -79,12 +91,17 @@ class Diameter{
     }
 
 class Result{
-    var x : Float
+    var x0 : Float
+    var x1 : Float
     var y : Float
-    var interval : Float?
+    var interval0 : Float
+    var interval1 : Float
     
-    init(x:Float,y:Float){
-        self.x = x
+    init(x0:Float,x1:Float,y:Float,interval0: Float){
+        self.x0 = x0
+        self.x1 = x1
         self.y = y
+        self.interval0 = interval0
+        self.interval1 = x1 - x0
     }
 }
