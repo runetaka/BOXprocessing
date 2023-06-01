@@ -647,8 +647,6 @@ extension InputViewController: UITableViewDelegate,UITableViewDataSource,UITextF
             cell.inputTextField.isHidden = true
             cell.numberLabel.isHidden = false
         }
-
-            
         }
         self.view.endEditing(true)
     }

@@ -7,9 +7,11 @@
 
 import UIKit
 import FirebaseFirestore
+import Nuke
 
 class JobListTableViewController:UIViewController{
     
+    @IBOutlet weak var searchButton: UIImageView!
     @IBOutlet weak var tableView: UITableView!
     var refresh =  UIRefreshControl()
     var jobs : [Job] = []
@@ -22,6 +24,23 @@ class JobListTableViewController:UIViewController{
         refresh.addTarget(self, action: #selector(refreshTableView), for: .valueChanged)
         getJobList()
         
+        searchButton.isUserInteractionEnabled = true
+        let search = UITapGestureRecognizer(target: self, action: #selector(tappedSearchButton))
+        searchButton.addGestureRecognizer(search)
+        
+        searchButton.cornerRadius = searchButton.frame.height / 2
+        searchButton.layer.masksToBounds = false
+        searchButton.layer.shadowColor = UIColor.black.cgColor
+        searchButton.layer.shadowOpacity = 0.3
+        searchButton.layer.shadowRadius = 4
+        searchButton.layer.shadowOffset = .zero
+        
+    }
+    
+    @objc func tappedSearchButton(){
+        let vc = self.storyboard?.instantiateViewController(withIdentifier: "SearchTableViewController") as! SearchTableViewController
+        let nav = UINavigationController(rootViewController: vc)
+        self.present(nav, animated: true)
     }
     
     @objc func refreshTableView(){
@@ -60,6 +79,11 @@ extension JobListTableViewController:UITableViewDelegate,UITableViewDataSource{
             cell.area.text = job.area
             cell.salary.text = job.salary
             cell.companyName.text = job.companyName
+            if let urlString = job.companyImages?.first{
+                let url = URL(string: urlString)
+                loadImage(with: url, into: cell.companyImageView) { result in
+                }
+            }
         }
         return cell
         
